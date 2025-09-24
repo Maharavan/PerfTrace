@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools >= 77.0.3"]
+[project]
+name = "autometrics"
+dynamic = ["version"]
+authors = [
+    {"name":"Maharavan","email":"maharavan10@gmail.com"}
+]
+requires-python = ">=3.9"
+maintainers  = [
+    {"name":"Maharavan","email":"maharavan10@gmail.com"}
+]
+description = "Autometrics PyPI package to track KPI metrics such as Error count,memory usage,Execution time and functional call"
+readme = "README.md"
+license = {text = "MIT"}
