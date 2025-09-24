@@ -5,11 +5,7 @@ import time
 import tracemalloc
 import asyncio
 import psutil
-call_count = defaultdict(int)
-error_count = defaultdict(int)
-exec_count  = defaultdict(list)
-memory_count = defaultdict(list)
-ram_count = defaultdict(list)
+import metrics
 
 def auto_metrics(debug=True):
     def code_tracker(func):
@@ -20,7 +16,7 @@ def auto_metrics(debug=True):
             print(f"Executing {func.__name__}")
             start_time = time.perf_counter()
             current_process = psutil.Process(os.getpid())
-            cpu_memory_current = current_process.memory_info().rss / (1024 * 1024)
+            cpu_memory_current = current_process.memory_info().rss / (1024 ** 2)
             tracemalloc.start()
             try:
                 if asyncio.iscoroutinefunction(func):
@@ -33,7 +29,7 @@ def auto_metrics(debug=True):
                     return func(*args,**kwargs) 
             except BaseException as e:
                 print(f'[AutoMetric] {func.__name__} failed')
-                error_count[func.__name__]+=1
+                metrics.error_count[func.__name__]+=1
                 raise
             finally:
                 current,peak = tracemalloc.get_traced_memory()
@@ -41,15 +37,15 @@ def auto_metrics(debug=True):
                 process_ram_delta = round(cpu_memory_end-cpu_memory_current,2)
                 tracemalloc.stop()
                 end_time = time.perf_counter()
-                call_count[func.__name__]+=1
-                memory_count[func.__name__].append((current,peak))
-                ram_count[func.__name__].append(process_ram_delta)
+                metrics.call_count[func.__name__]+=1
+                metrics.memory_count[func.__name__].append((current,peak))
+                metrics.ram_count[func.__name__].append(process_ram_delta)
                 execution_time = end_time-start_time
-                exec_count[func.__name__].append(execution_time)
+                metrics.exec_count[func.__name__].append(execution_time)
 
                 print(f"[AutoMetric] Executed time {func.__name__}: {execution_time:.2f}")
-                print(f"[AutoMetric] Call Count: {call_count[func.__name__]}")
-                print(f"[AutoMetric] Error Count : {error_count[func.__name__]}")
+                print(f"[AutoMetric] Call Count: {metrics.call_count[func.__name__]}")
+                print(f"[AutoMetric] Error Count : {metrics.error_count[func.__name__]}")
                 print(f"[Autometric] Function Memory Current & Peak Memory Size : {current/1024**2:.2f} Mb {peak/1024**2:.2f}Mb ")
                 print(f"[Autometric] CPU Memory {process_ram_delta}")
 
