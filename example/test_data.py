@@ -3,7 +3,7 @@ import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from autometrics.core.decorators import auto_metrics,auto_metrics_cl
-
+from autometrics.core.context_manager import AutometricContextManager
 @auto_metrics_cl
 class MyProcessor:
     @staticmethod
@@ -36,8 +36,12 @@ def os_error():
         f.read()
 
 if __name__=='__main__':
-    track_cl  = MyProcessor()
-    track_cl.step1(1)
-    lc = list_comprehensive()
-    nl = normal_loop()
+    # track_cl  = MyProcessor()
+    # track_cl.step1(1)
+    # lc = list_comprehensive()
+    # nl = normal_loop()
     # trigger_memory_error()
+    with AutometricContextManager() as collectors:
+        work = [x ** 2 for x in range(100000)]
+
+    print(collectors.get_metrics())

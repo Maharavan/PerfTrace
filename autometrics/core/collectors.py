@@ -132,9 +132,9 @@ class FileIOCollector(BaseCollector):
 
 class GarbageCollector(BaseCollector):
     def __init__(self):
-        self.initial_gc_count = None
-        self.final_gc_count = None
-        self.delta_gc_count = None
+        self.initial_gc_count = 0
+        self.final_gc_count = 0
+        self.delta_gc_count = 0
         self.gc_events = []
     def _callback(self,phase,info):
         self.gc_events.append({
@@ -220,13 +220,20 @@ class SystemCollector(BaseCollector):
         pass
     def report(self):
         system_memory = psutil.virtual_memory()
-
+        disk_storage = psutil.disk_usage('/')
+        uptime = psutil.boot_time()
+        cpu_percent = psutil.cpu_percent(interval=0.1, percpu=True)
         return {
             "total_system_memory": system_memory.total,
             "available_system_memory":system_memory.available,
             "used_memory":system_memory.used,
             "free_memory":system_memory.free,
-            "memory_percentage":system_memory.percent
+            "memory_percentage":system_memory.percent,
+            "total_disk_space":disk_storage.total,
+            "used_disk_space":disk_storage.used,
+            "free_disk_space":disk_storage.free,
+            "uptime": uptime,
+            "cpu_percent":cpu_percent
         }
     
 class ThreadContextCollector(BaseCollector):
@@ -250,5 +257,15 @@ class ThreadContextCollector(BaseCollector):
             "threads_delta": self.final_thread - self.initial_thread,
             "ctx_switches_voluntary_delta": self.final_ctx_switches.voluntary - self.initial_ctx_switches.voluntary,
             "ctx_switches_involuntary_delta": self.final_ctx_switches.involuntary - self.initial_ctx_switches.involuntary,
+            "initial_threads": self.initial_thread,
+            "final_threads": self.final_thread,
+            "initial_ctx_switches": {
+                "voluntary": self.initial_ctx_switches.voluntary,
+                "involuntary": self.initial_ctx_switches.involuntary
+            },
+            "final_ctx_switches": {
+                "voluntary": self.final_ctx_switches.voluntary,
+                "involuntary": self.final_ctx_switches.involuntary
+            },
         }
     

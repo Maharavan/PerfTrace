@@ -1,5 +1,4 @@
 import asyncio
-from collections import defaultdict
 from functools import wraps
 from .collectors import ExecutionCollector
 from .collectors import MemoryCollector
@@ -7,6 +6,7 @@ from .collectors import CPUCollector
 from .collectors import FileIOCollector
 from .collectors import GarbageCollector
 from .collectors import NetworkActivityCollector
+from .collectors import ThreadContextCollector
 def auto_metrics(debug=True):
     def code_tracker(func):
         @wraps(func)
@@ -18,7 +18,8 @@ def auto_metrics(debug=True):
                 CPUCollector(),
                 FileIOCollector(),
                 GarbageCollector(),
-                NetworkActivityCollector()
+                NetworkActivityCollector(),
+                ThreadContextCollector(),
             ]
             for stats in collector:
                 stats.start()
