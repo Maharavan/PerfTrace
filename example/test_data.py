@@ -2,9 +2,9 @@ import asyncio
 import os
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from autometrics.core import auto_metrics,auto_metrics_cl
+from autometrics.core.decorators import auto_metrics,auto_metrics_cl
 
-@auto_metrics_cl()
+@auto_metrics_cl
 class MyProcessor:
     @staticmethod
     def step1(x):
