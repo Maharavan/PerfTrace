@@ -7,15 +7,30 @@ from .collectors import NetworkActivityCollector
 from .collectors import ThreadContextCollector
 
 class AutometricContextManager:
+    """
+    Context manager for collecting metrics on code blocks.
+    
+    Args:
+        cls_collectors: None (all collectors), 'all', list of collector names, or single collector name
+    
+    Examples:
+        with AutometricContextManager() as metrics:
+            expensive_operation()
+        
+        with AutometricContextManager(['memory', 'cpu']) as metrics:
+            targeted_monitoring()
+        
+        reports = metrics.get_metrics()
+    """
     def __init__(self,cls_collectors=None):
         self.collectors = {
-            "MemoryCollector":MemoryCollector(),
-            "CPUCollector":CPUCollector(),
-            "ExecutionCollector":ExecutionCollector(),
-            "FileIOCollector":FileIOCollector(),
-            "GarbageCollector":GarbageCollector(),
-            "ThreadContextCollector": ThreadContextCollector(),
-            "NetworkCollector":NetworkActivityCollector(),
+            "memory":MemoryCollector(),
+            "cpu":CPUCollector(),
+            "execution":ExecutionCollector(),
+            "file":FileIOCollector(),
+            "garbage":GarbageCollector(),
+            "ThreadContext": ThreadContextCollector(),
+            "network":NetworkActivityCollector(),
         }
         self.report = {}
         if cls_collectors is None or (isinstance(cls_collectors,str) and cls_collectors=="all"):
@@ -36,8 +51,14 @@ class AutometricContextManager:
             
             self.active_collectors = {cls_collectors:self.collectors[cls_collectors]}
     def __enter__(self):
-        for _,collector in self.active_collectors.items():
-            collector.start()
+        failed_collectors = []
+        for name,collector in self.active_collectors.items():
+            try:
+                collector.start()
+            except Exception as e:
+                failed_collectors.append(f"{name}: {e}")
+        if failed_collectors:
+            print(f"Warning: Some collectors failed to start: {', '.join(failed_collectors)}")
         return self
     
     def __exit__(self,exc_type,exc_value,exc_traceback):
