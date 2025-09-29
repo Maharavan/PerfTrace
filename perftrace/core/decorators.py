@@ -8,7 +8,7 @@ from .collectors import GarbageCollector
 from .collectors import NetworkActivityCollector
 from .collectors import ThreadContextCollector
 from ..storage import get_storage
-def auto_metrics(profilers=None):
+def perf_trace_metrics(profilers=None):
     def code_tracker(func):
         @wraps(func)
         def wrapper(*args,**kwargs):
@@ -55,27 +55,27 @@ def auto_metrics(profilers=None):
                 else:
                     return func(*args,**kwargs) 
             except BaseException as e:
-                print(f'[AutoMetric] {func.__name__} failed')
+                print(f'[PerfTrace] {func.__name__} failed')
                 raise
             finally:
                 for name,collector in active_collectors.items():
                     collector.stop()
                     report[collector.__class__.__name__] = collector.report()
                     
-                    #print(f"[Autometrics] {collector.__class__.__name__} {report[collector.__class__.__name__]}")
+                    #print(f"[PerfTrace] {collector.__class__.__name__} {report[collector.__class__.__name__]}")
                 get_storage(backend='sqlite',report=report)
         return wrapper
     return code_tracker
 
 
-def auto_metrics_cl(cls,debug=True):
+def perf_trace_metrics_cl(cls,debug=True):
     for name,method in cls.__dict__.items():
         if isinstance(method,staticmethod):
             get_func = method.__func__
-            setattr(cls,name,staticmethod(auto_metrics(debug)(get_func)))
+            setattr(cls,name,staticmethod(perf_trace_metrics(debug)(get_func)))
         elif isinstance(method,classmethod):
             get_func = method.__func__
-            setattr(cls,name,classmethod(auto_metrics(debug)(get_func)))
+            setattr(cls,name,classmethod(perf_trace_metrics(debug)(get_func)))
         elif callable(method) and not name.startswith('__'):
-            setattr(cls,name,auto_metrics(debug)(method))
+            setattr(cls,name,perf_trace_metrics(debug)(method))
     return cls

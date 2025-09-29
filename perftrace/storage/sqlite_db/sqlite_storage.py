@@ -2,27 +2,25 @@ import os
 from pathlib import Path
 import sqlalchemy as db
 class ProfilerLiteDB:
-    def __init__(self,profiler_report,table_name="ProfilerReport"):
-        self.db_path = Path.home() /'.autometrics'
-        os.makedirs(self.db_path,exist_ok=True)
-        self.db_file = os.path.join(self.db_path,'autometrics.db')
-        self.db = db.create_engine(f"sqlite:///{self.db_file}")
+    def __init__(self,profiler_report,table_name="ProfilerReport",db_engine=None):
         self.profiler_report = profiler_report
         self.table_name = table_name
-        self.conn = self.db.connect()
+        self.db_engine = db_engine
         self.metadata = db.MetaData()
         self.table = None
-        self.inspect = db.inspect(self.conn)
         self.save_execution()
 
 
     def save_execution(self):
-        self.create_table()
-        self.insert_data()
+        with self.db_engine.connect() as conn:
+            with conn.begin():
+                self._create_table(conn)
+                self._insert_data(conn)
 
-    def create_table(self):
-        if self.table_name in self.inspect.get_table_names():
-            self.table = db.Table(self.table_name,self.metadata,autoload_with=self.db)
+    def _create_table(self,conn):
+        inspect = db.inspect(self.db_engine)
+        if self.table_name in inspect.get_table_names():
+            self.table = db.Table(self.table_name,self.metadata,autoload_with=self.db_engine)
             return
         columns = [db.Column('Id', db.Integer,primary_key=True,autoincrement=True)]
 
@@ -37,9 +35,10 @@ class ProfilerLiteDB:
             
             columns.append(db.Column(column,type))
         self.table = db.Table(self.table_name,self.metadata,*columns)
-        self.metadata.create_all(self.conn)
+        self.metadata.create_all(self.db_engine)
     
-    def insert_data(self):
+    def _insert_data(self,conn):
         query = db.insert(self.table).values(**self.profiler_report)
-        self.conn.execute(query)
-        self.conn.commit()
+        conn.execute(query)
+    
+    

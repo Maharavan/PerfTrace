@@ -6,7 +6,7 @@ from .collectors import GarbageCollector
 from .collectors import NetworkActivityCollector
 from .collectors import ThreadContextCollector
 
-class AutometricContextManager:
+class PerfTraceContextManager:
     """
     Context manager for collecting metrics on code blocks.
     
@@ -14,10 +14,10 @@ class AutometricContextManager:
         cls_collectors: None (all collectors), 'all', list of collector names, or single collector name
     
     Examples:
-        with AutometricContextManager() as metrics:
+        with PerfTraceContextManager() as metrics:
             expensive_operation()
         
-        with AutometricContextManager(['memory', 'cpu']) as metrics:
+        with PerfTraceContextManager(['memory', 'cpu']) as metrics:
             targeted_monitoring()
         
         reports = metrics.get_metrics()

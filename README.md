@@ -1,5 +1,5 @@
-autometric/
-├── autometric/                    # Main package directory
+PerfTrace/
+├── PerfTrace//                    # Main package directory
 │   ├── __init__.py               # Package initialization & public API
 │   ├── core/                     # Core functionality
 │   │   ├── __init__.py
