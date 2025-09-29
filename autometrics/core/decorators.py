@@ -7,22 +7,44 @@ from .collectors import FileIOCollector
 from .collectors import GarbageCollector
 from .collectors import NetworkActivityCollector
 from .collectors import ThreadContextCollector
-def auto_metrics(debug=True):
+from ..storage import get_storage
+def auto_metrics(profilers=None):
     def code_tracker(func):
         @wraps(func)
         def wrapper(*args,**kwargs):
             report = {}
-            collector = [
-                ExecutionCollector(),
-                MemoryCollector(),
-                CPUCollector(),
-                FileIOCollector(),
-                GarbageCollector(),
-                NetworkActivityCollector(),
-                ThreadContextCollector(),
-            ]
-            for stats in collector:
-                stats.start()
+            active_collectors = None
+            profile_collectors = {
+                "memory":MemoryCollector(),
+                "cpu":CPUCollector(),
+                "execution":ExecutionCollector(),
+                "file":FileIOCollector(),
+                "garbagecollector":GarbageCollector(),
+                "ThreadContext": ThreadContextCollector(),
+                "network":NetworkActivityCollector(),
+            }
+            
+
+            if profilers is None or (isinstance(profilers,str) and profilers=="all"):
+                active_collectors = profile_collectors   
+            elif isinstance(profilers,list):
+                try:
+                    active_collectors = {cls:profile_collectors[cls] for cls in profilers}
+                except KeyError as e:
+                    available = list(profile_collectors.keys())
+                    raise ValueError(f"Unknown collector. Available: {','.join(available)}")
+            else:
+                if not isinstance(profilers, str):
+                    raise TypeError(f"Expected string, list, or None. Got {type(active_collectors)}")
+                
+                if profilers not in profile_collectors:
+                    available = list(profile_collectors.keys())
+                    raise ValueError(f"Unknown collector '{profilers}'. Available: {available}")
+                
+                active_collectors = {profilers:profilers[profilers]}
+            for _,collector in active_collectors.items():
+                collector.start()
+
             try:
                 if asyncio.iscoroutinefunction(func):
                     coroutine =  func(*args,**kwargs)   
@@ -36,10 +58,12 @@ def auto_metrics(debug=True):
                 print(f'[AutoMetric] {func.__name__} failed')
                 raise
             finally:
-                for stats in collector:
-                    stats.stop()
-                    report[stats.__class__.__name__] = stats.report()
-                    print(f"[Autometrics] {stats.__class__.__name__} {report[stats.__class__.__name__]}")
+                for name,collector in active_collectors.items():
+                    collector.stop()
+                    report[collector.__class__.__name__] = collector.report()
+                    
+                    #print(f"[Autometrics] {collector.__class__.__name__} {report[collector.__class__.__name__]}")
+                get_storage(backend='sqlite',report=report)
         return wrapper
     return code_tracker
 

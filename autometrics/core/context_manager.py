@@ -28,7 +28,7 @@ class AutometricContextManager:
             "cpu":CPUCollector(),
             "execution":ExecutionCollector(),
             "file":FileIOCollector(),
-            "garbage":GarbageCollector(),
+            "garbagecollector":GarbageCollector(),
             "ThreadContext": ThreadContextCollector(),
             "network":NetworkActivityCollector(),
         }

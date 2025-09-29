@@ -14,19 +14,19 @@ class MyProcessor:
         print(f"Step2 processing {y}")
         return y * 2
 
-@auto_metrics()
+@auto_metrics(profilers="all")
 def list_comprehensive():
     data = [i for i in range(100000)]
     return data
 
-@auto_metrics(debug=False)
+@auto_metrics(profilers="all")
 def normal_loop():
     data = []
     for i in range(100000):
         data.append(i)
     return data
 
-@auto_metrics()
+@auto_metrics(profilers=["cpu","memory"])
 def trigger_memory_error():
     big_list = [0] * (10**10)
 
@@ -38,10 +38,10 @@ def os_error():
 if __name__=='__main__':
     # track_cl  = MyProcessor()
     # track_cl.step1(1)
-    # lc = list_comprehensive()
-    # nl = normal_loop()
-    # trigger_memory_error()
-    with AutometricContextManager() as collectors:
-        work = [x ** 2 for x in range(100000)]
+    lc = list_comprehensive()
+    nl = normal_loop()
+    #trigger_memory_error()
+    # with AutometricContextManager() as collectors:
+    #     work = [x ** 2 for x in range(100000)]
 
-    print(collectors.get_metrics())
+    # print(collectors.get_metrics())

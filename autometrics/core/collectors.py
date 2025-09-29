@@ -46,10 +46,12 @@ class ExecutionCollector(BaseCollector):
 class CPUCollector(BaseCollector):
     def __init__(self):
         self.current_process = psutil.Process(os.getpid())
-        self.cpu_usage_start = None
-        self.cpu_usage_end = None
-        self.ram_delta = None
-        self.avg_cpu_percentage = None
+        self.cpu_mem_start = 0
+        self.cpu_mem_end = 0
+        self.cpu_usage_start = 0
+        self.cpu_usage_end = 0
+        self.ram_delta = 0
+        self.avg_cpu_percentage = 0
 
     def start(self):
         self.cpu_mem_start =  self.current_process.memory_info().rss /(1024**2)
@@ -60,12 +62,8 @@ class CPUCollector(BaseCollector):
         self.cpu_usage_end = self.current_process.cpu_percent(interval=0.1)
         
     def report(self):
-        if self.cpu_mem_start is not None and self.cpu_mem_end is not None:
-            self.ram_delta = self.cpu_mem_end-self.cpu_mem_start
-            
-
-        if self.cpu_usage_end is not None and self.cpu_usage_start is not None:
-            self.avg_cpu_percentage = (self.cpu_usage_end+self.cpu_usage_start)/2
+        self.ram_delta = self.cpu_mem_end-self.cpu_mem_start
+        self.avg_cpu_percentage = (self.cpu_usage_end+self.cpu_usage_start)/2
         
         return {
             "ram_delta":self.ram_delta,
@@ -130,35 +128,29 @@ class FileIOCollector(BaseCollector):
             "other_bytes": self.other_bytes_delta
         }
 
+
 class GarbageCollector(BaseCollector):
     def __init__(self):
-        self.initial_gc_count = 0
-        self.final_gc_count = 0
-        self.delta_gc_count = 0
-        self.gc_events = []
-    def _callback(self,phase,info):
-        self.gc_events.append({
-            "phase":phase,
-            "info": info
-        })
+        self.initial_gc_count = None
+        self.final_gc_count = None
+        self.delta_gc_count = None
 
     def start(self):
         self.initial_gc_count = gc.get_count()
-        gc.callbacks.append(self._callback)
-    
+
     def stop(self):
         self.final_gc_count = gc.get_count()
-        self.delta_gc_count = tuple (v2-v1 for v1,v2 in zip(self.initial_gc_count,self.final_gc_count))
-        if self._callback in gc.callbacks:
-            gc.callbacks.remove(self._callback)
-    
+        self.delta_gc_count = tuple(
+            v2 - v1 for v1, v2 in zip(self.initial_gc_count, self.final_gc_count)
+        )
+
     def report(self):
         return {
-            "initial_gc_count":self.initial_gc_count,
+            "initial_gc_count": self.initial_gc_count,
             "final_gc_count": self.final_gc_count,
             "delta_gc_count": self.delta_gc_count,
-            "gc_events":self.gc_events,
         }
+
         
 class NetworkActivityCollector(BaseCollector):
     def __init__(self):
