@@ -3,7 +3,8 @@ import os
 import sys
 from perftrace import perf_trace_metrics,perf_trace_metrics_cl
 from perftrace import PerfTraceContextManager
-@perf_trace_metrics_cl
+
+@perf_trace_metrics_cl(profilers=["cpu"])
 class MyProcessor:
     @staticmethod
     def step1(x):
@@ -18,7 +19,7 @@ def list_comprehensive():
     data = [i for i in range(100000)]
     return data
 
-@perf_trace_metrics(profilers="all")
+@perf_trace_metrics(profilers=["cpu"])
 def normal_loop():
     data = []
     for i in range(100000):
@@ -35,12 +36,12 @@ def os_error():
         f.read()
 
 if __name__=='__main__':
-    # track_cl  = MyProcessor()
-    # track_cl.step1(1)
+    track_cl  = MyProcessor()
+    track_cl.step1(1)
     lc = list_comprehensive()
     nl = normal_loop()
     #trigger_memory_error()
-    with PerfTraceContextManager() as collectors:
+    with PerfTraceContextManager(context_tag="work") as collectors:
         work = [x ** 2 for x in range(100000)]
 
     # print(collectors.get_metrics())

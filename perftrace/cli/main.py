@@ -1,6 +1,9 @@
 import click
 from rich import print
-from .commands import version,help
+from perftrace.cli.commands import version
+from perftrace.cli.commands import help
+from perftrace.cli.commands import list
+from perftrace.cli.commands import show
 from perftrace import __version__
 
 class PerfTraceGroup(click.Group):
@@ -18,7 +21,8 @@ def cli(ctx):
 
 cli.add_command(version)
 cli.add_command(help)
-
+cli.add_command(list)
+cli.add_command(show)
 
 def main():
     cli()

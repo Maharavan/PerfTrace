@@ -1,10 +1,11 @@
-from .collectors import ExecutionCollector
-from .collectors import MemoryCollector
-from .collectors import CPUCollector
-from .collectors import FileIOCollector
-from .collectors import GarbageCollector
-from .collectors import NetworkActivityCollector
-from .collectors import ThreadContextCollector
+from perftrace.core.collectors import ExecutionCollector
+from perftrace.core.collectors import MemoryCollector
+from perftrace.core.collectors import CPUCollector
+from perftrace.core.collectors import FileIOCollector
+from perftrace.core.collectors import GarbageCollector
+from perftrace.core.collectors import NetworkActivityCollector
+from perftrace.core.collectors import ThreadContextCollector
+from perftrace.storage import get_storage
 
 class PerfTraceContextManager:
     """
@@ -22,7 +23,7 @@ class PerfTraceContextManager:
         
         reports = metrics.get_metrics()
     """
-    def __init__(self,cls_collectors=None):
+    def __init__(self,context_tag,cls_collectors=None):
         self.collectors = {
             "memory":MemoryCollector(),
             "cpu":CPUCollector(),
@@ -32,6 +33,7 @@ class PerfTraceContextManager:
             "ThreadContext": ThreadContextCollector(),
             "network":NetworkActivityCollector(),
         }
+        self.context_tag = context_tag
         self.report = {}
         if cls_collectors is None or (isinstance(cls_collectors,str) and cls_collectors=="all"):
             self.active_collectors = self.collectors    
@@ -58,11 +60,14 @@ class PerfTraceContextManager:
         if failed_collectors:
             print(f"Warning: Some collectors failed to start: {', '.join(failed_collectors)}")
         return self
-    
+
     def __exit__(self,exc_type,exc_value,exc_traceback):
+        self.report["Function_name"] = None
+        self.report["Context_tag"] = self.context_tag
         for _,collector in self.active_collectors.items():
             collector.stop()
             self.report[collector.__class__.__name__] = collector.report()
+        get_storage(backend='sqlite',report=self.report)
         return False
     
     def get_metrics(self):

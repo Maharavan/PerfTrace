@@ -1,11 +1,12 @@
-from .collectors import ExecutionCollector
-from .collectors import MemoryCollector
-from .collectors import CPUCollector
-from .collectors import FileIOCollector
-from .collectors import GarbageCollector
-from .collectors import NetworkActivityCollector
-from .collectors import ThreadContextCollector
-from ..storage import get_storage
+from perftrace.core.collectors import ExecutionCollector
+from perftrace.core.collectors import MemoryCollector
+from perftrace.core.collectors import CPUCollector
+from perftrace.core.collectors import FileIOCollector
+from perftrace.core.collectors import GarbageCollector
+from perftrace.core.collectors import NetworkActivityCollector
+from perftrace.core.collectors import ThreadContextCollector
+# from perftrace.core.collectors import ExceptionCollector
+from perftrace.storage import get_storage
 import asyncio
 from functools import wraps
 def perf_trace_metrics(profilers=None):
@@ -22,6 +23,7 @@ def perf_trace_metrics(profilers=None):
                 "garbagecollector":GarbageCollector(),
                 "ThreadContext": ThreadContextCollector(),
                 "network":NetworkActivityCollector(),
+                # "error":ExceptionCollector()
             }
             
 
@@ -55,9 +57,12 @@ def perf_trace_metrics(profilers=None):
                 else:
                     return func(*args,**kwargs) 
             except BaseException as e:
+                # ExceptionCollector.capture()
                 print(f'[PerfTrace] {func.__name__} failed')
                 raise
             finally:
+                report["Function_name"] = func.__name__
+                report["Context_tag"] = None
                 for name,collector in active_collectors.items():
                     collector.stop()
                     report[collector.__class__.__name__] = collector.report()
@@ -68,14 +73,16 @@ def perf_trace_metrics(profilers=None):
     return code_tracker
 
 
-def perf_trace_metrics_cl(cls,debug=True):
-    for name,method in cls.__dict__.items():
-        if isinstance(method,staticmethod):
-            get_func = method.__func__
-            setattr(cls,name,staticmethod(perf_trace_metrics(debug)(get_func)))
-        elif isinstance(method,classmethod):
-            get_func = method.__func__
-            setattr(cls,name,classmethod(perf_trace_metrics(debug)(get_func)))
-        elif callable(method) and not name.startswith('__'):
-            setattr(cls,name,perf_trace_metrics(debug)(method))
-    return cls
+def perf_trace_metrics_cl(profilers=None):
+    def decorator(cls):
+        for name,method in cls.__dict__.items():
+            if isinstance(method,staticmethod):
+                get_func = method.__func__
+                setattr(cls,name,staticmethod(perf_trace_metrics(profilers)(get_func)))
+            elif isinstance(method,classmethod):
+                get_func = method.__func__
+                setattr(cls,name,classmethod(perf_trace_metrics(profilers)(get_func)))
+            elif callable(method) and not name.startswith('__'):
+                setattr(cls,name,perf_trace_metrics(profilers)(method))
+        return cls
+    return decorator

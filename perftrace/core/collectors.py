@@ -23,9 +23,9 @@ class BaseCollector(ABC):
 
 class ExecutionCollector(BaseCollector):
     def __init__(self):
-        self.start_time = None
-        self.stop_time = None
-        self.exec_time = None
+        self.start_time = 0
+        self.stop_time = 0
+        self.exec_time = 0
     def start(self):
         self.start_time =  time.perf_counter()
     
@@ -33,8 +33,7 @@ class ExecutionCollector(BaseCollector):
         self.stop_time =  time.perf_counter()
     
     def report(self):
-        if self.start_time is not None and self.stop_time is not None:
-            self.exec_time = self.stop_time-self.start_time
+        self.exec_time = self.stop_time-self.start_time
         return {
             "execution_time":self.exec_time,
             "start_time":self.start_time,
@@ -131,9 +130,9 @@ class FileIOCollector(BaseCollector):
 
 class GarbageCollector(BaseCollector):
     def __init__(self):
-        self.initial_gc_count = None
-        self.final_gc_count = None
-        self.delta_gc_count = None
+        self.initial_gc_count = 0
+        self.final_gc_count = 0
+        self.delta_gc_count = 0
 
     def start(self):
         self.initial_gc_count = gc.get_count()
@@ -260,4 +259,13 @@ class ThreadContextCollector(BaseCollector):
                 "involuntary": self.final_ctx_switches.involuntary
             },
         }
+
+# class ExceptionCollector(BaseCollector):
+#     def start(self):
+#         return super().start()
+#     def stop(self):
+#         return super().stop()
     
+#     def report(self):
+#         return super().report()
+#     def capture(self):
