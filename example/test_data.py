@@ -1,9 +1,8 @@
 import asyncio
 import os
 import sys
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from perftrace.core.decorators import perf_trace_metrics,perf_trace_metrics_cl
-from perftrace.core.context_manager import PerfTraceContextManager
+from perftrace import perf_trace_metrics,perf_trace_metrics_cl
+from perftrace import PerfTraceContextManager
 @perf_trace_metrics_cl
 class MyProcessor:
     @staticmethod
@@ -41,7 +40,7 @@ if __name__=='__main__':
     lc = list_comprehensive()
     nl = normal_loop()
     #trigger_memory_error()
-    # with PerfTraceContextManager() as collectors:
-    #     work = [x ** 2 for x in range(100000)]
+    with PerfTraceContextManager() as collectors:
+        work = [x ** 2 for x in range(100000)]
 
     # print(collectors.get_metrics())

@@ -1,15 +1,20 @@
-[build-system]
-requires = ["setuptools >= 77.0.3"]
 [project]
-name = "PerfTrace"
-dynamic = ["version"]
+name = "perftrace"
+version = "0.1.0"
+description = "A lightweight Python profiler for tracing CPU, memory, I/O, GC, and system metrics with storage and CLI support."
 authors = [
-    {"name":"Maharavan","email":"maharavan10@gmail.com"}
+    {name = "Maharavan",email = "90346511+Maharavan@users.noreply.github.com"}
 ]
-requires-python = ">=3.9"
-maintainers  = [
-    {"name":"Maharavan","email":"maharavan10@gmail.com"}
-]
-description = "PerfTrace PyPI package to track KPI metrics such as Error count,memory usage,Execution time and functional call"
-readme = "README.md"
 license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+perftrace = "perftrace.cli.main:main"

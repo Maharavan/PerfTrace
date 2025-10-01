@@ -40,15 +40,13 @@ class PerfTraceContextManager:
                 self.active_collectors = {cls:self.collectors[cls] for cls in cls_collectors}
             except KeyError as e:
                 available = list(self.collectors.keys())
-                raise ValueError(f"Unknown collector. Available: {','.join(available)}")
+                raise ValueError(f"Unknown collector. Available: {','.join(available)}") from e
         else:
             if not isinstance(cls_collectors, str):
-                raise TypeError(f"Expected string, list, or None. Got {type(cls_collectors)}")
-            
+                raise TypeError(f"Expected string, list, or None. Got {type(cls_collectors)}")          
             if cls_collectors not in self.collectors:
                 available = list(self.collectors.keys())
-                raise ValueError(f"Unknown collector '{cls_collectors}'. Available: {available}")
-            
+                raise ValueError(f"Unknown collector '{cls_collectors}'. Available: {available}")    
             self.active_collectors = {cls_collectors:self.collectors[cls_collectors]}
     def __enter__(self):
         failed_collectors = []
@@ -69,5 +67,3 @@ class PerfTraceContextManager:
     
     def get_metrics(self):
         return self.report
-
-

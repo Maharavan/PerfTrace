@@ -1,5 +1,3 @@
-import asyncio
-from functools import wraps
 from .collectors import ExecutionCollector
 from .collectors import MemoryCollector
 from .collectors import CPUCollector
@@ -8,6 +6,8 @@ from .collectors import GarbageCollector
 from .collectors import NetworkActivityCollector
 from .collectors import ThreadContextCollector
 from ..storage import get_storage
+import asyncio
+from functools import wraps
 def perf_trace_metrics(profilers=None):
     def code_tracker(func):
         @wraps(func)
@@ -32,7 +32,7 @@ def perf_trace_metrics(profilers=None):
                     active_collectors = {cls:profile_collectors[cls] for cls in profilers}
                 except KeyError as e:
                     available = list(profile_collectors.keys())
-                    raise ValueError(f"Unknown collector. Available: {','.join(available)}")
+                    raise ValueError(f"Unknown collector. Available: {','.join(available)}") from e
             else:
                 if not isinstance(profilers, str):
                     raise TypeError(f"Expected string, list, or None. Got {type(active_collectors)}")
