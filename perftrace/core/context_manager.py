@@ -6,7 +6,7 @@ from perftrace.core.collectors import GarbageCollector
 from perftrace.core.collectors import NetworkActivityCollector
 from perftrace.core.collectors import ThreadContextCollector
 from perftrace.storage import get_storage
-
+import datetime
 class PerfTraceContextManager:
     """
     Context manager for collecting metrics on code blocks.
@@ -50,6 +50,7 @@ class PerfTraceContextManager:
                 available = list(self.collectors.keys())
                 raise ValueError(f"Unknown collector '{cls_collectors}'. Available: {available}")    
             self.active_collectors = {cls_collectors:self.collectors[cls_collectors]}
+        self.active_collectors["execution"] = ExecutionCollector()
     def __enter__(self):
         failed_collectors = []
         for name,collector in self.active_collectors.items():
@@ -62,6 +63,7 @@ class PerfTraceContextManager:
         return self
 
     def __exit__(self,exc_type,exc_value,exc_traceback):
+        self.report["Timestamp"] = datetime.datetime.now()
         self.report["Function_name"] = None
         self.report["Context_tag"] = self.context_tag
         for _,collector in self.active_collectors.items():

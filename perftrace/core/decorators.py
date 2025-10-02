@@ -8,6 +8,7 @@ from perftrace.core.collectors import ThreadContextCollector
 # from perftrace.core.collectors import ExceptionCollector
 from perftrace.storage import get_storage
 import asyncio
+import datetime
 from functools import wraps
 def perf_trace_metrics(profilers=None):
     def code_tracker(func):
@@ -44,6 +45,8 @@ def perf_trace_metrics(profilers=None):
                     raise ValueError(f"Unknown collector '{profilers}'. Available: {available}")
                 
                 active_collectors = {profilers:profilers[profilers]}
+            active_collectors["execution"] = ExecutionCollector()
+
             for _,collector in active_collectors.items():
                 collector.start()
 
@@ -58,9 +61,10 @@ def perf_trace_metrics(profilers=None):
                     return func(*args,**kwargs) 
             except BaseException as e:
                 # ExceptionCollector.capture()
-                print(f'[PerfTrace] {func.__name__} failed')
+                print(f'[PerfTrace] {func.__name__} {e} failed')
                 raise
             finally:
+                report["Timestamp"] = datetime.datetime.now()
                 report["Function_name"] = func.__name__
                 report["Context_tag"] = None
                 for name,collector in active_collectors.items():

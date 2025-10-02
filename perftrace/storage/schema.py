@@ -1,7 +1,10 @@
-from sqlalchemy import  Column, Integer, Float,String
+from sqlalchemy import  Column, Integer, Float,String,TIMESTAMP
+import datetime
 
 column = [
     Column("Id", Integer, primary_key=True, autoincrement=True),
+    Column("Timestamp",TIMESTAMP),
+
     # Memory
     Column("Function_name",String),
     Column("Context_tag",String),
@@ -66,6 +69,6 @@ column = [
     Column("NetworkActivityCollector_connection_type_ESTABLISHED", Integer),
     Column("NetworkActivityCollector_connection_type_NONE", Integer),
     Column("NetworkActivityCollector_connection_type_SYN_SENT", Integer),
-    Column("NetworkActivityCollector_connection_type_CLOSE_WAIT",Integer)
+    Column("NetworkActivityCollector_connection_type_CLOSE_WAIT",Integer),
 ]
     
