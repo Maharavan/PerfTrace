@@ -17,12 +17,6 @@ def filter_functions_context(df,column_value):
     if not remove_duplicates:
         print(f"[red]No info available[/red]")
 
-from rich.console import Console
-from rich.table import Table
-from rich import print
-import json
-
-console = Console()
 
 def get_info_about_function_context(dataframe):
     """Display detailed information about each Function or Context."""

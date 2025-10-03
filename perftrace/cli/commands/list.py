@@ -1,7 +1,7 @@
 import click
 from rich import print
 from perftrace.cli.logger import filter_functions_context
-from perftrace.cli.command_utils import check_retrieve_data
+from perftrace.cli.db_utils import check_retrieve_data
 
 @click.command()
 def list():

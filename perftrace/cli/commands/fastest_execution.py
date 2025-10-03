@@ -1,6 +1,6 @@
 import click
 from rich import print
-from perftrace.cli.command_utils import check_retrieve_data
+from perftrace.cli.db_utils import check_retrieve_data
 from perftrace.cli.logger import find_slowest_fastest_executed
 @click.command()
 def fastest():

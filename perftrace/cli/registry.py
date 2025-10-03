@@ -9,6 +9,8 @@ from perftrace.cli.commands.stats import stats_context
 from perftrace.cli.commands.fastest_execution import fastest as fastest_execution
 from perftrace.cli.commands.slowest_execution import slowest as slowest_execution
 from perftrace.cli.commands.help import help as help_cmd
+from perftrace.cli.commands.today_function_call import today
+
 from perftrace import __version__
 
 
@@ -57,5 +59,9 @@ cli_commands = {
         "function": fastest_execution,
         "description": "Shows the function or context with the fastest execution time."
     },
+    "today":{
+        "function":today,
+        "description":"Shows Today Function call"
+    }
 }
 

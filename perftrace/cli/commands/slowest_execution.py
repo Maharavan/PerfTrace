@@ -1,5 +1,5 @@
 import click
-from perftrace.cli.command_utils import check_retrieve_data
+from perftrace.cli.db_utils import check_retrieve_data
 from perftrace.cli.logger import find_slowest_fastest_executed
 from rich import print
 

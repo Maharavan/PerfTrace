@@ -1,6 +1,6 @@
 import click
 from perftrace.cli.logger import get_info_about_function_context
-from perftrace.cli.command_utils import check_retrieve_data
+from perftrace.cli.db_utils import check_retrieve_data
 from rich import print
 
 @click.command()
