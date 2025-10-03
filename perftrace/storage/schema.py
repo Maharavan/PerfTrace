@@ -3,7 +3,7 @@ import datetime
 
 column = [
     Column("Id", Integer, primary_key=True, autoincrement=True),
-    Column("Timestamp",TIMESTAMP),
+    Column("Timestamp",TIMESTAMP,default=datetime.datetime.now()),
 
     # Memory
     Column("Function_name",String),

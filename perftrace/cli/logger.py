@@ -15,12 +15,12 @@ def filter_functions_context(df,column_value):
     if not remove_duplicates:
         print(f"[red]No info available[/red]")
 
-def get_info_about_function_context(df):
+def get_info_about_function_context(dataframe):
     """Get information about Function/Context"""
-    if df.empty:
+    if dataframe.empty:
         print("[red] Empty result. Please provide valid command [/red]")
         return
-    for _, row in df.iterrows():
+    for _, row in dataframe.iterrows():
         table =  Table(title="Function /Context Manager")
         table.add_column('Metrics',style="cyan", no_wrap=True)
         table.add_column('Values',style="magenta")
