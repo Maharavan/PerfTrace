@@ -10,6 +10,12 @@ from perftrace.cli.commands.fastest_execution import fastest as fastest_executio
 from perftrace.cli.commands.slowest_execution import slowest as slowest_execution
 from perftrace.cli.commands.help import help as help_cmd
 from perftrace.cli.commands.today_function_call import today
+from perftrace.cli.commands.history_command import history
+from perftrace.cli.commands.history_command import search_function
+from perftrace.cli.commands.history_command import search_context
+
+
+
 
 from perftrace import __version__
 
@@ -62,6 +68,18 @@ cli_commands = {
     "today":{
         "function":today,
         "description":"Shows Today Function call"
+    },
+    "history":{
+        "function": history,
+        "description": "Shows history data for specific days"
+    },
+    "search-function":{
+        "function":search_function,
+        "description": "Shows history of specific function"
+    },
+    "search-context":{
+        "function":search_context,
+        "description": "Shows history of specific function"
     }
 }
 

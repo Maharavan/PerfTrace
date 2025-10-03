@@ -28,7 +28,7 @@ def get_info_about_function_context(dataframe):
         func_name = row.get("Function_name", "N/A")
         ctx_tag = row.get("Context_tag", "N/A")
         timestamp = row.get("Timestamp", "N/A")
-        tit_header = func_name if func_name is not None else ctx_tag
+        tit_header = func_name if func_name != "N/A" else ctx_tag
         table = Table(title=f"Function/Context Report — {tit_header}")
         table.add_column("Metrics", style="cyan", no_wrap=True)
         table.add_column("Values", style="magenta", overflow="fold")
