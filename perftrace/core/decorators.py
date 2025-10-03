@@ -72,7 +72,7 @@ def perf_trace_metrics(profilers=None):
                     report[collector.__class__.__name__] = collector.report()
                     
                     #print(f"[PerfTrace] {collector.__class__.__name__} {report[collector.__class__.__name__]}")
-                get_storage(backend='sqlite',report=report)
+                get_storage(backend='duckdb',report=report)
         return wrapper
     return code_tracker
 

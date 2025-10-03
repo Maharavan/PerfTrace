@@ -69,7 +69,7 @@ class PerfTraceContextManager:
         for _,collector in self.active_collectors.items():
             collector.stop()
             self.report[collector.__class__.__name__] = collector.report()
-        get_storage(backend='sqlite',report=self.report)
+        get_storage(backend='duckdb',report=self.report)
         return False
     
     def get_metrics(self):

@@ -9,7 +9,7 @@ PerfTrace/
 │   ├── storage/                  # Data persistence layer
 │   │   ├── __init__.py
 │   │   ├── base.py              # Abstract storage interface
-│   │   ├── sqlite_storage.py    # SQLite implementation
+│   │   ├── duckdb_storage.py    # duckdb implementation
 │   │   ├── file_storage.py      # JSON/pickle file storage
 │   │   └── memory_storage.py    # In-memory storage
 │   ├── analysis/                 # Data analysis & statistics

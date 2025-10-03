@@ -1,9 +1,10 @@
-from sqlalchemy import create_engine
 import pandas as pd
-from perftrace.storage import SQLITE_DB_ENGINE,SQLITE_TABLE_NAME
-
+from perftrace.storage import DB_FILE,DB_TABLE_NAME
+import duckdb
 
 def database_pandas_converter():
-    sql_query = f"SELECT * FROM {SQLITE_TABLE_NAME}"
-    df = pd.read_sql_table(SQLITE_TABLE_NAME,SQLITE_DB_ENGINE)
-    return df
+    sql_query = f"SELECT * FROM {DB_TABLE_NAME}"
+    with duckdb.connect(database=DB_FILE) as con:
+        dataframe = con.sql(sql_query).df()
+    return dataframe
+
