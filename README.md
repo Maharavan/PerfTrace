@@ -86,4 +86,4 @@ Tmrw Plan: (5-6 hrs)
 3. dashboard initial setup
 4. commands view in help section - Done
 5. grafana if possible
-6. Duckdb feasability
+6. Duckdb feasability - done

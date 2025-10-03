@@ -10,55 +10,27 @@ from perftrace.storage import get_storage
 import asyncio
 import datetime
 from functools import wraps
+profile_collectors = {
+    "memory":MemoryCollector,
+    "cpu":CPUCollector,
+    "execution":ExecutionCollector,
+    "file":FileIOCollector,
+    "garbagecollector":GarbageCollector,
+    "ThreadContext": ThreadContextCollector,
+    "network":NetworkActivityCollector,
+    # "error":ExceptionCollector()
+}
 def perf_trace_metrics(profilers=None):
     def code_tracker(func):
         @wraps(func)
-        def wrapper(*args,**kwargs):
+        def sync_wrapper(*args,**kwargs):
             report = {}
-            active_collectors = None
-            profile_collectors = {
-                "memory":MemoryCollector(),
-                "cpu":CPUCollector(),
-                "execution":ExecutionCollector(),
-                "file":FileIOCollector(),
-                "garbagecollector":GarbageCollector(),
-                "ThreadContext": ThreadContextCollector(),
-                "network":NetworkActivityCollector(),
-                # "error":ExceptionCollector()
-            }
-            
-
-            if profilers is None or (isinstance(profilers,str) and profilers=="all"):
-                active_collectors = profile_collectors   
-            elif isinstance(profilers,list):
-                try:
-                    active_collectors = {cls:profile_collectors[cls] for cls in profilers}
-                except KeyError as e:
-                    available = list(profile_collectors.keys())
-                    raise ValueError(f"Unknown collector. Available: {','.join(available)}") from e
-            else:
-                if not isinstance(profilers, str):
-                    raise TypeError(f"Expected string, list, or None. Got {type(active_collectors)}")
-                
-                if profilers not in profile_collectors:
-                    available = list(profile_collectors.keys())
-                    raise ValueError(f"Unknown collector '{profilers}'. Available: {available}")
-                
-                active_collectors = {profilers:profilers[profilers]}
-            active_collectors["execution"] = ExecutionCollector()
+            active_collectors = _iterate_collectors(profilers)
 
             for _,collector in active_collectors.items():
                 collector.start()
-
             try:
-                if asyncio.iscoroutinefunction(func):
-                    coroutine =  func(*args,**kwargs)   
-                    if asyncio.get_running_loop():
-                        return  coroutine
-                    else:
-                        return asyncio.run(coroutine)
-                else:
-                    return func(*args,**kwargs) 
+                return func(*args,**kwargs) 
             except BaseException as e:
                 # ExceptionCollector.capture()
                 print(f'[PerfTrace] {func.__name__} {e} failed')
@@ -72,8 +44,35 @@ def perf_trace_metrics(profilers=None):
                     report[collector.__class__.__name__] = collector.report()
                     
                     #print(f"[PerfTrace] {collector.__class__.__name__} {report[collector.__class__.__name__]}")
-                get_storage(backend='duckdb',report=report)
-        return wrapper
+                get_storage(report=report)
+
+        @wraps(func)
+        async def async_wrapper(*args,**kwargs):
+            report = {}
+            active_collectors = _iterate_collectors(profilers)
+
+            for _,collector in active_collectors.items():
+                collector.start()
+            try:
+                return await func(*args,**kwargs) 
+            except BaseException as e:
+                # ExceptionCollector.capture()
+                print(f'[PerfTrace] {func.__name__} {e} failed')
+                raise
+            finally:
+                report["Timestamp"] = datetime.datetime.now()
+                report["Function_name"] = func.__name__
+                report["Context_tag"] = None
+                for name,collector in active_collectors.items():
+                    collector.stop()
+                    report[collector.__class__.__name__] = collector.report()
+                    
+                    #print(f"[PerfTrace] {collector.__class__.__name__} {report[collector.__class__.__name__]}")
+                get_storage(report=report)
+        if asyncio.iscoroutinefunction(func):
+            return async_wrapper
+        else:
+            return sync_wrapper
     return code_tracker
 
 
@@ -90,3 +89,27 @@ def perf_trace_metrics_cl(profilers=None):
                 setattr(cls,name,perf_trace_metrics(profilers)(method))
         return cls
     return decorator
+
+def _iterate_collectors(profilers):
+    active_collectors = None
+
+    if profilers is None or (isinstance(profilers,str) and profilers=="all"):
+        active_collectors = {cls:profile_collectors[cls]() for cls in profile_collectors}   
+    elif isinstance(profilers,list):
+        try:
+            active_collectors = {cls:profile_collectors[cls]() for cls in profilers}
+        except KeyError as e:
+            available = list(profile_collectors.keys())
+            raise ValueError(f"Unknown collector. Available: {','.join(available)}") from e
+    else:
+        if not isinstance(profilers, str):
+            raise TypeError(f"Expected string, list, or None. Got {type(profilers)}")
+        
+        if profilers not in profile_collectors:
+            available = list(profile_collectors.keys())
+            raise ValueError(f"Unknown collector '{profilers}'. Available: {available}")
+        
+        active_collectors = {profilers:profile_collectors[profilers]()}
+    active_collectors["execution"] = ExecutionCollector()
+    return active_collectors
+
