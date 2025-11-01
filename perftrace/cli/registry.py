@@ -13,7 +13,8 @@ from perftrace.cli.commands.today_function_call import today
 from perftrace.cli.commands.history_command import history
 from perftrace.cli.commands.history_command import search_function
 from perftrace.cli.commands.history_command import search_context
-
+from perftrace.cli.commands.system_status import system_data as system_info
+from perftrace.cli.commands.get_memory import memory
 
 
 
@@ -79,7 +80,15 @@ cli_commands = {
     },
     "search-context":{
         "function":search_context,
-        "description": "Shows history of specific function"
+        "description": "Shows history of Context manager"
+    },
+    "system-info":{
+        "function":system_info,
+        "description":"Retrieves System Data"
+    },
+    "memory":{
+        "function":memory,
+        "description": "Get Memory stats of function & Context manager"
     }
 }
 

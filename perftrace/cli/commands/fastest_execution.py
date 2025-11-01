@@ -7,7 +7,6 @@ def fastest():
     """Show Fastest executed functions/Context Managers"""
     print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")
     df = check_retrieve_data()
-    print(df)
     print("\n[bold yellow]Function data:[/bold yellow]")
     df.fillna('-')
     find_slowest_fastest_executed(df,'Function_name',True)

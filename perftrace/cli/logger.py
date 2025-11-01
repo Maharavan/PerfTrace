@@ -132,3 +132,18 @@ def find_slowest_fastest_executed(dataframe,column_name,ascending=True):
     for _,row in df_clean_func.iterrows():
         table.add_row(str(row[column_name]),str(json.loads(row['ExecutionCollector'])['execution_time']))
     console.print(table)
+
+def inverted_print(dataframe_modified,column):
+    current_memory = defaultdict(list)
+    peak_memory = defaultdict(list)
+    for val in dataframe_modified:
+        
+        if val in ('Function_name' ,'Context_tag',column):
+            
+            try:
+                val_dict = json.loads(val)
+                if not isinstance(val_dict, dict):
+                    continue
+            except Exception:
+                continue        
+        

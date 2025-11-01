@@ -82,8 +82,8 @@ PerfTrace/
 Tmrw Plan: (5-6 hrs)
 
 1. Postgresql support
-2. 15 commands support
+2. commands support
 3. dashboard initial setup
-4. commands view in help section - Done
-5. grafana if possible
-6. Duckdb feasability - done
+4. grafana if possible
+5. Buffer memory
+6. alert
