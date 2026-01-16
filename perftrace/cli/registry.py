@@ -13,10 +13,12 @@ from perftrace.cli.commands.today_function_call import today
 from perftrace.cli.commands.history_command import history
 from perftrace.cli.commands.history_command import search_function
 from perftrace.cli.commands.history_command import search_context
-from perftrace.cli.commands.system_status import system_data as system_info
+from perftrace.cli.commands.system_status import system_data
 from perftrace.cli.commands.get_memory import memory
-
-
+from perftrace.cli.commands.config import create_config
+from perftrace.cli.commands.system_monitor import system_monitor
+from perftrace.cli.commands.system_info import system_info
+from perftrace.cli.commands.export_csv import export_result_csv
 
 from perftrace import __version__
 
@@ -82,13 +84,30 @@ cli_commands = {
         "function":search_context,
         "description": "Shows history of Context manager"
     },
-    "system-info":{
-        "function":system_info,
-        "description":"Retrieves System Data"
+    "system-status":{
+        "function":system_data,
+        "description":"Retrieves System Status"
     },
     "memory":{
         "function":memory,
         "description": "Get Memory stats of function & Context manager"
+    },
+    "set-config":{
+        "function":create_config,
+        "description": "Create Config"
+    },
+    "system-monitor":{
+        "function": system_monitor,
+        "description": "Real time monitor system"
+    },
+    "system-info":{
+        "function": system_info,
+        "description": "Gives information about the system"
+    },
+    "export-csv":{
+        "function": export_result_csv,
+        "description": "Export the Database data in CSV format"
     }
+
 }
 

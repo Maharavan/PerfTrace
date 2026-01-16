@@ -85,5 +85,5 @@ Tmrw Plan: (5-6 hrs)
 2. commands support
 3. dashboard initial setup
 4. grafana if possible
-5. Buffer memory
+5. Batch processing
 6. alert

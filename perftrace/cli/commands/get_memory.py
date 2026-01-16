@@ -12,5 +12,5 @@ def memory():
     table.add_column('Command',style='cyan')
     table.add_column('Description',style="green")
     df = check_retrieve_data()
-    print(df['MemoryCollector'])
-    inverted_print(df)
+    inverted_print(df,'Function_name','MemoryCollector')
+    inverted_print(df,'Context_tag','MemoryCollector')

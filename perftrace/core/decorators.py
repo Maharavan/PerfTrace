@@ -20,6 +20,7 @@ profile_collectors = {
     "network":NetworkActivityCollector,
     # "error":ExceptionCollector()
 }
+
 def perf_trace_metrics(profilers=None):
     def code_tracker(func):
         @wraps(func)
@@ -41,9 +42,7 @@ def perf_trace_metrics(profilers=None):
                 report["Context_tag"] = None
                 for name,collector in active_collectors.items():
                     collector.stop()
-                    report[collector.__class__.__name__] = collector.report()
-                    
-                    #print(f"[PerfTrace] {collector.__class__.__name__} {report[collector.__class__.__name__]}")
+                    report[collector.__class__.__name__] = collector.report()                    
                 get_storage(report=report)
 
         @wraps(func)

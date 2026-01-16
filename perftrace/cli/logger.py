@@ -114,36 +114,72 @@ def statistical_summary(dataframe):
 
     console.print(table)
 
-def find_slowest_fastest_executed(dataframe,column_name,ascending=True):
+def find_slowest_fastest_executed(dataframe,column_name,sort_by=True):
     """Displays top 10 slowest/Fastest executed function"""
     title = 'Slowest time'
-    if ascending:
+    if sort_by:
         title = 'Fastest time'
     df_clean_func = dataframe.dropna(subset=[column_name])
-    print(df_clean_func)
-    df_clean_func = df_clean_func.sort_values(
-        by="ExecutionCollector",
-        ascending=ascending
+    output = defaultdict(float)
+    for _,row in df_clean_func.iterrows():
+        output[str(row[column_name])]+=float(str(json.loads(row['ExecutionCollector'])['execution_time']))
+    df_output = pd.DataFrame(list(output.items()), columns=[column_name, 'execution_time'])
+
+
+    df_output = df_output.sort_values(
+        by='execution_time',
+        ascending=sort_by
     ).head(10)
 
     table = Table(title=title)
     table.add_column(column_name,style="green")
     table.add_column('Execution Time',style="blue")
-    for _,row in df_clean_func.iterrows():
-        table.add_row(str(row[column_name]),str(json.loads(row['ExecutionCollector'])['execution_time']))
+    for _,row in df_output.iterrows():
+        table.add_row(str(row[column_name]),str(row['execution_time']))
     console.print(table)
 
-def inverted_print(dataframe_modified,column):
-    current_memory = defaultdict(list)
-    peak_memory = defaultdict(list)
-    for val in dataframe_modified:
-        
-        if val in ('Function_name' ,'Context_tag',column):
-            
-            try:
-                val_dict = json.loads(val)
-                if not isinstance(val_dict, dict):
-                    continue
-            except Exception:
-                continue        
-        
+
+def inverted_print(dataframe_modified, header_row, column):
+    if dataframe_modified.empty:
+        console.print("[red]Empty result. Please provide valid command.[/red]")
+        return
+
+    table = Table(title="Memory Collector")
+    table.add_column(header_row, justify="center", style="green")
+    table.add_column("current_memory", justify="right", style="cyan")
+    table.add_column("peak_memory", justify="right", style="magenta")
+
+    merged_values = defaultdict(lambda: {"current_memory": None, "peak_memory": None})
+
+    for _, row in dataframe_modified.iterrows():
+        if row[header_row] is None or row[column] in (None, "-", ""):
+            continue
+        try:
+            mem_values = json.loads(row[column])
+        except Exception:
+            continue
+        if not isinstance(mem_values, dict):
+            continue
+        func_name = str(row[header_row])
+        current = mem_values.get("current_memory")
+        peak = mem_values.get("peak_memory")
+
+        if current is not None:
+            existing_current = merged_values[func_name]["current_memory"]
+            merged_values[func_name]["current_memory"] = (
+                current if existing_current is None else max(existing_current, current)
+            )
+        if peak is not None:
+            existing_peak = merged_values[func_name]["peak_memory"]
+            merged_values[func_name]["peak_memory"] = (
+                peak if existing_peak is None else max(existing_peak, peak)
+            )
+
+    for func_name, mem_values in merged_values.items():
+        table.add_row(
+            func_name,
+            str(mem_values.get("current_memory")),
+            str(mem_values.get("peak_memory"))
+        )
+
+    console.print(table)

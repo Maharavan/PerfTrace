@@ -1,10 +1,13 @@
 import pandas as pd
-from perftrace.storage import DB_FILE,DB_TABLE_NAME
+from perftrace.constant import DUCK_DB_FILE
 import duckdb
 
-def database_pandas_converter():
-    sql_query = f"SELECT * FROM {DB_TABLE_NAME}"
-    with duckdb.connect(database=DB_FILE) as con:
-        dataframe = con.sql(sql_query).df()
-    return dataframe
+class DatabaseLoader:
 
+    @staticmethod
+    def duckdb_database_pandas_converter(tablename):
+        
+        sql_query = f"SELECT * FROM {tablename}"
+        with duckdb.connect(database=DUCK_DB_FILE) as con:
+            dataframe = con.sql(sql_query).df()
+        return dataframe
