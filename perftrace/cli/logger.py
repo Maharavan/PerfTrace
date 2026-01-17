@@ -17,32 +17,6 @@ def filter_functions_context(df,column_value):
     if not remove_duplicates:
         print(f"[red]No info available[/red]")
 
-
-def formatize_function_context(dataframe):
-    """Display detailed information about each Function or Context."""
-    if dataframe.empty:
-        console.print("[red]Empty result. Please provide valid command.[/red]")
-        return
-    headers = set()
-    for _,row in dataframe.iterrows():
-        for metric, results in row.items():
-            if metric in ("timestamp", "function_name", "context_tag"):
-                continue
-            if results in (None, "-", ""):
-                continue
-            try:
-                parsed_data = json.loads(results)
-                for key,_ in parsed_data.items():
-                    headers.add(key)
-            except Exception as e:
-                print(e)
-    print(headers)
-    output = pd.DataFrame()
-
-    for _,row in dataframe.iterrows():
-        for metric, results in row.items():
-            print(results)
-
 def get_recent_info_about_function_context(dataframe):
     """Display Recent information about Function or Context."""
     if dataframe.empty:

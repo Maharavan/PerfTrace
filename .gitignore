@@ -1,2 +1,4 @@
 __pycache__
-commands.txt
+*.txt
+*.csv
+*.json

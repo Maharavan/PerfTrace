@@ -16,7 +16,5 @@ def check_retrieve_data():
     elif db_name == 'postgresql':
         print("[yellow]Loading Postgresql database...[/yellow]")
         DB_DATA = DatabaseLoader.postgresql_database_pandas_converter(DB_TABLE_NAME)
-    else:
-        print("[green]Using cached database data[/green]")
     return DB_DATA
 

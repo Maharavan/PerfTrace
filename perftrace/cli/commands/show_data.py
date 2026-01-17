@@ -1,5 +1,5 @@
 import click
-from perftrace.cli.logger import formatize_function_context
+from perftrace.cli.logger import get_recent_info_about_function_context
 from perftrace.cli.db_utils import check_retrieve_data
 from rich import print
 
@@ -12,7 +12,7 @@ def show_function(function_name):
     print("\n[bold yellow]Overall Function data:[/bold yellow]")
     filtered_df = df[df['function_name']==function_name]
     filtered_df.fillna('-',inplace=True)
-    formatize_function_context(filtered_df)
+    get_recent_info_about_function_context(filtered_df)
 
 @click.command()
 @click.argument("context_tag")
@@ -23,5 +23,5 @@ def show_context(context_tag):
     print("\n[bold yellow]Overall Function data:[/bold yellow]")
     filtered_df = df[df['context_tag']==context_tag]
     filtered_df.fillna('-',inplace=True)
-    formatize_function_context(filtered_df)
+    get_recent_info_about_function_context(filtered_df)
 

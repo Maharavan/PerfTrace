@@ -21,6 +21,6 @@ def stats_function(function_name):
     print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")
     df = check_retrieve_data()
     print("\n[bold yellow]Stats Function data:[/bold yellow]")
-    filtered_df = df[df['function_name']==function_name]
+    filtered_df = df[df['unction_name']==function_name]
     filtered_df.fillna('-',inplace=True)
     statistical_summary(filtered_df)

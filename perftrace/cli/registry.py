@@ -18,7 +18,9 @@ from perftrace.cli.commands.get_memory import memory
 from perftrace.cli.commands.config import create_config
 from perftrace.cli.commands.system_monitor import system_monitor
 from perftrace.cli.commands.system_info import system_info
-from perftrace.cli.commands.export_csv import export_result_csv
+from perftrace.cli.commands.export_csv import export_context_csv, export_result_csv
+from perftrace.cli.commands.export_csv import export_function_csv
+from perftrace.cli.commands.export_json import export_result_json
 
 from perftrace import __version__
 
@@ -107,6 +109,18 @@ cli_commands = {
     "export-csv":{
         "function": export_result_csv,
         "description": "Export the Database data in CSV format"
+    },
+    "export-function-csv":{
+        "function": export_function_csv,
+        "description": "Export the Function data in CSV format"
+    },
+    "export-context-csv":{
+        "function": export_context_csv,
+        "description": "Export the Context data in CSV format"
+    },
+    "export-json":{
+        "function": export_result_json,
+        "description": "Export the Database data in JSON format"
     }
 
 }
