@@ -21,6 +21,7 @@ from perftrace.cli.commands.system_info import system_info
 from perftrace.cli.commands.export_csv import export_context_csv, export_result_csv
 from perftrace.cli.commands.export_csv import export_function_csv
 from perftrace.cli.commands.export_json import export_result_json
+from perftrace.cli.commands.database_info import database_info
 
 from perftrace import __version__
 
@@ -121,6 +122,10 @@ cli_commands = {
     "export-json":{
         "function": export_result_json,
         "description": "Export the Database data in JSON format"
+    },
+    "database-info":{
+        "function": database_info,
+        "description": "Get details of Database"
     }
 
 }
