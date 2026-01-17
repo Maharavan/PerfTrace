@@ -1,6 +1,5 @@
 import pandas as pd
 import duckdb
-from perftrace.constant import DUCK_DB_FILE
 import psycopg2
 from psycopg2 import sql
 from perftrace.storage.config_manager import ConfigManager
@@ -8,9 +7,10 @@ class DatabaseLoader:
 
     @staticmethod
     def duckdb_database_pandas_converter(tablename):
-        
+        config = ConfigManager.load_config()
+        database_path = config.get("database").get("engine").get("path")
         sql_query = f"SELECT * FROM {tablename}"
-        with duckdb.connect(database=DUCK_DB_FILE) as con:
+        with duckdb.connect(database=database_path) as con:
             dataframe = con.sql(sql_query).df()
         return dataframe
     
