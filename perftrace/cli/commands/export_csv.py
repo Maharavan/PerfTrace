@@ -48,7 +48,7 @@ def auto_flatten_dataframe(df, sep="."):
 
     return df_flat
 
-@click.command
+@click.command()
 @click.option('--filename', default=f'perftrace_final_{RANDOM_ID}.csv')
 def export_result_csv(filename):
     """Export Database result in CSV format"""
@@ -64,7 +64,7 @@ def export_result_csv(filename):
     print(f'[green]Auto-flattened CSV exported: {filename}[/green]')
 
 
-@click.command
+@click.command()
 @click.option('--filename', default=f'perftrace_function_{RANDOM_ID}.csv')
 def export_function_csv(filename):
     """Export Function result in CSV format"""
@@ -87,7 +87,7 @@ def export_function_csv(filename):
     print(f'[green]Flattened function CSV exported: {filename}[/green]')
 
 
-@click.command
+@click.command()
 @click.option('--filename', default=f'perftrace_context_tag_{RANDOM_ID}.csv')
 def export_context_csv(filename):
     """Export Context Manager result in CSV format"""

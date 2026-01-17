@@ -1,6 +1,6 @@
 [project]
 name = "perftrace"
-version = "0.1.0"
+version = "1.0.0"
 description = "A lightweight Python profiler for tracing CPU, memory, I/O, GC, and system metrics with storage and CLI support."
 authors = [
     {name = "Maharavan",email = "90346511+Maharavan@users.noreply.github.com"}

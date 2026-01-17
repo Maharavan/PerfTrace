@@ -5,7 +5,7 @@ from perftrace.cli.db_utils import check_retrieve_data
 import datetime
 import pandas as pd
 
-@click.command
+@click.command()
 @click.option("--day")
 def history(day):
     """Show PerfTrace today monitoring functions"""
@@ -23,7 +23,7 @@ def history(day):
     print("\n[bold yellow]Context Manager:[/bold yellow]")
     get_recent_info_about_function_context(dataframe,'context_tag')
 
-@click.command
+@click.command()
 @click.argument("function")
 @click.option("--day",required=True,help="Specifies days to filter the function")
 def search_function(function,day):
@@ -38,7 +38,7 @@ def search_function(function,day):
     get_recent_info_about_function_context(dataframe)
 
 
-@click.command
+@click.command()
 @click.argument("context")
 @click.option("--day",required=True,help="Specifies days to filter the function")
 def search_context(context,day):

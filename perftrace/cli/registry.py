@@ -22,7 +22,8 @@ from perftrace.cli.commands.export_csv import export_context_csv, export_result_
 from perftrace.cli.commands.export_csv import export_function_csv
 from perftrace.cli.commands.export_json import export_all_json, export_context_json, export_function_json
 from perftrace.cli.commands.database_info import database_info
-
+from perftrace.cli.commands.frequency_count import count_function
+from perftrace.cli.commands.frequency_count import count_context
 from perftrace import __version__
 
 
@@ -134,7 +135,14 @@ cli_commands = {
     "database-info":{
         "function": database_info,
         "description": "Get details of Database"
+    },
+    "count-function":{
+        "function": count_function,
+        "description": "Frequency of function"
+    },
+    "count-context":{
+        "function": count_context,
+        "description": "Frequency of Context Manager"
     }
-
 }
 

@@ -4,7 +4,7 @@ from perftrace.cli.logger import filter_functions_context
 from perftrace.cli.db_utils import check_retrieve_data
 import datetime
 import pandas as pd
-@click.command
+@click.command()
 def today():
     """Show PerfTrace today monitoring functions"""
     print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")

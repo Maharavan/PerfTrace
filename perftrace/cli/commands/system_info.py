@@ -3,7 +3,7 @@ import click
 from rich import print
 from rich.console import Console
 from rich.table import Table
-@click.command
+@click.command()
 def system_info():
     """Provides system information"""
     platform_data = platform.uname()
