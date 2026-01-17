@@ -7,6 +7,7 @@ from perftrace.cli.logger import inverted_print
 
 @click.command
 def memory():
+    """Provides Memory used in Function/Context"""
     console = Console()
     print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")
     table = Table(title="Command List",style="yellow")

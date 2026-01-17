@@ -7,6 +7,7 @@ from perftrace.storage.config_manager import ConfigManager
 
 @click.command
 def database_info():
+    """Provides Database information"""
     config = ConfigManager.load_config()
     print("[bold cyan] Database Information [/bold cyan]")
     get_database = config.get("database").get("engine")

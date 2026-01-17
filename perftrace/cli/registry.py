@@ -8,7 +8,7 @@ from perftrace.cli.commands.stats import stats_function
 from perftrace.cli.commands.stats import stats_context
 from perftrace.cli.commands.fastest_execution import fastest as fastest_execution
 from perftrace.cli.commands.slowest_execution import slowest as slowest_execution
-from perftrace.cli.commands.help import help as help_cmd
+from perftrace.cli.commands.help import render_help as help_cmd
 from perftrace.cli.commands.today_function_call import today
 from perftrace.cli.commands.history_command import history
 from perftrace.cli.commands.history_command import search_function

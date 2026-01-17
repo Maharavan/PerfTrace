@@ -11,6 +11,8 @@ random_id = uuid.uuid4()
 @click.command
 @click.option('--filename', default=f'perftrace_final_{random_id}.json')
 def export_result_json(filename):
+    """Export Database result in JSON"""
+
     df = check_retrieve_data()
     df.to_json(filename,indent=4)
     print(f"[bold green] DataFrame successfully saved to {filename} [/bold green]")

@@ -5,7 +5,7 @@ from rich.console import Console
 from rich.table import Table
 @click.command
 def system_info():
-
+    """Provides system information"""
     platform_data = platform.uname()
 
     system_details = {

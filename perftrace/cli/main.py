@@ -12,7 +12,7 @@ class PerfTraceGroup(click.Group):
         return super().get_help(ctx)
 
 
-@click.group(invoke_without_command=True,cls=PerfTraceGroup)
+@click.group(invoke_without_command=True,cls=PerfTraceGroup,add_help_option=False)
 @click.pass_context
 def cli(ctx):
     """PerfTrace CLI - Unified Performance Tracing"""

@@ -17,7 +17,7 @@ def show_function(function_name):
 @click.command()
 @click.argument("context_tag")
 def show_context(context_tag):
-    """Show PerfTrace monitoring functions"""
+    """Show PerfTrace monitoring Context Manager"""
     print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")
     df = check_retrieve_data()
     print("\n[bold yellow]Overall Function data:[/bold yellow]")

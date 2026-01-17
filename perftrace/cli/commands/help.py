@@ -4,7 +4,7 @@ from rich import print
 from rich.console import Console
 from rich.table import Table
 @click.command()
-def help():
+def render_help():
     """Show PerfTrace help"""
     from perftrace.cli.registry import cli_commands
     console = Console()
@@ -15,6 +15,5 @@ def help():
     table.add_column('Description',style="green")
     for command,desc in cli_commands.items():
         table.add_row(command,desc['description'])
-    
     console.print(table)
     
