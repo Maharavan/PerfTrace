@@ -8,7 +8,7 @@ class DatabaseLoader:
     @staticmethod
     def duckdb_database_pandas_converter(tablename):
         config = ConfigManager.load_config()
-        database_path = config.get("database").get("engine").get("path")
+        database_path = config.get("database").get("duckdb").get("path")
         sql_query = f"SELECT * FROM {tablename}"
         with duckdb.connect(database=database_path) as con:
             dataframe = con.sql(sql_query).df()

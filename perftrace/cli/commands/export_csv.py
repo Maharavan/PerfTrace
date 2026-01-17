@@ -6,7 +6,7 @@ import pandas as pd
 from rich import print
 from perftrace.cli.db_utils import check_retrieve_data
 
-random_id = uuid.uuid4()
+RANDOM_ID = uuid.uuid4()
 
 
 def flatten_value(value, parent_key="", sep="."):
@@ -49,7 +49,7 @@ def auto_flatten_dataframe(df, sep="."):
     return df_flat
 
 @click.command
-@click.option('--filename', default=f'perftrace_final_{random_id}.csv')
+@click.option('--filename', default=f'perftrace_final_{RANDOM_ID}.csv')
 def export_result_csv(filename):
     """Export Database result in CSV format"""
     df = check_retrieve_data()
@@ -65,7 +65,7 @@ def export_result_csv(filename):
 
 
 @click.command
-@click.option('--filename', default=f'perftrace_function_{random_id}.csv')
+@click.option('--filename', default=f'perftrace_function_{RANDOM_ID}.csv')
 def export_function_csv(filename):
     """Export Function result in CSV format"""
 
@@ -88,7 +88,7 @@ def export_function_csv(filename):
 
 
 @click.command
-@click.option('--filename', default=f'perftrace_context_tag_{random_id}.csv')
+@click.option('--filename', default=f'perftrace_context_tag_{RANDOM_ID}.csv')
 def export_context_csv(filename):
     """Export Context Manager result in CSV format"""
 

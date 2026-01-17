@@ -20,7 +20,7 @@ from perftrace.cli.commands.system_monitor import system_monitor
 from perftrace.cli.commands.system_info import system_info
 from perftrace.cli.commands.export_csv import export_context_csv, export_result_csv
 from perftrace.cli.commands.export_csv import export_function_csv
-from perftrace.cli.commands.export_json import export_result_json
+from perftrace.cli.commands.export_json import export_all_json, export_context_json, export_function_json
 from perftrace.cli.commands.database_info import database_info
 
 from perftrace import __version__
@@ -120,8 +120,16 @@ cli_commands = {
         "description": "Export the Context data in CSV format"
     },
     "export-json":{
-        "function": export_result_json,
+        "function": export_all_json,
         "description": "Export the Database data in JSON format"
+    },
+    "export-function-json":{
+        "function": export_function_json,
+        "description": "Export the Function data in JSON format"
+    },
+    "export-context-json":{
+        "function": export_context_json,
+        "description": "Export the Context data in JSON format"
     },
     "database-info":{
         "function": database_info,
