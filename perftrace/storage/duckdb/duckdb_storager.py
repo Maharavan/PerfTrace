@@ -17,13 +17,12 @@ class DuckDBStorage:
             self._insert_data(con)
                 
     def _create_table(self,con):
-        from perftrace.storage.schema import TABLE_SCHEMA
-        con.execute(TABLE_SCHEMA)
+        from perftrace.storage.duckdb.schema import DUCKDB_SCHEMA
+        con.execute(DUCKDB_SCHEMA)
 
     def _insert_data(self,con):
-        
         con.execute(
-            "INSERT INTO ProfilerReport VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 self.profiler_report["Timestamp"],
                 self.profiler_report["Function_name"],

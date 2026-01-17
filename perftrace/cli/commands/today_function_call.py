@@ -9,12 +9,12 @@ def today():
     """Show PerfTrace today monitoring functions"""
     print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")
     dataframe = check_retrieve_data()
-    dataframe['Timestamp'] = pd.to_datetime(dataframe['Timestamp'])
+    dataframe['timestamp'] = pd.to_datetime(dataframe['timestamp'])
     today = datetime.datetime.now().date()
-    dataframe = dataframe[dataframe['Timestamp'].dt.date==today]
+    dataframe = dataframe[dataframe['timestamp'].dt.date==today]
     print("\n[blue]Today Function & Context calls [/blue]")
 
     print("\n[bold yellow]Function name:[/bold yellow]")
-    filter_functions_context(dataframe,'Function_name')
+    filter_functions_context(dataframe,'function_name')
     print("\n[bold yellow]Context Manager:[/bold yellow]")
-    filter_functions_context(dataframe,'Context_tag')
+    filter_functions_context(dataframe,'context_tag')

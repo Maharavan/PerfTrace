@@ -1,9 +1,5 @@
 import click
-import yaml
-import os
-from pathlib import Path
 from rich.console import Console
-from rich import print
 from perftrace.storage.config_manager import ConfigManager
 
 console = Console()
@@ -38,7 +34,6 @@ def create_config():
         pg = config["database"]["postgresql"]
         pg["host"] = click.prompt("Host", default=pg.get("host", "localhost"))
         pg["port"] = click.prompt("Port", default=pg.get("port", 5432), type=int)
-        pg["database"] = click.prompt("Database name", default=pg.get("database", "mydb"))
         pg["user"] = click.prompt("Username", default=pg.get("user", "postgres"))
         pg["password"] = click.prompt("Password", default=pg.get("password", "changeme"), hide_input=True)
 

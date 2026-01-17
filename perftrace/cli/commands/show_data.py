@@ -1,5 +1,5 @@
 import click
-from perftrace.cli.logger import get_info_about_function_context
+from perftrace.cli.logger import formatize_function_context
 from perftrace.cli.db_utils import check_retrieve_data
 from rich import print
 
@@ -10,9 +10,9 @@ def show_function(function_name):
     print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")
     df = check_retrieve_data()
     print("\n[bold yellow]Overall Function data:[/bold yellow]")
-    filtered_df = df[df['Function_name']==function_name]
+    filtered_df = df[df['function_name']==function_name]
     filtered_df.fillna('-',inplace=True)
-    get_info_about_function_context(filtered_df)
+    formatize_function_context(filtered_df)
 
 @click.command()
 @click.argument("context_tag")
@@ -21,7 +21,7 @@ def show_context(context_tag):
     print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")
     df = check_retrieve_data()
     print("\n[bold yellow]Overall Function data:[/bold yellow]")
-    filtered_df = df[df['Context_tag']==context_tag]
+    filtered_df = df[df['context_tag']==context_tag]
     filtered_df.fillna('-',inplace=True)
-    get_info_about_function_context(filtered_df)
+    formatize_function_context(filtered_df)
 

@@ -18,16 +18,41 @@ def filter_functions_context(df,column_value):
         print(f"[red]No info available[/red]")
 
 
-def get_info_about_function_context(dataframe):
+def formatize_function_context(dataframe):
     """Display detailed information about each Function or Context."""
     if dataframe.empty:
         console.print("[red]Empty result. Please provide valid command.[/red]")
         return
+    headers = set()
+    for _,row in dataframe.iterrows():
+        for metric, results in row.items():
+            if metric in ("timestamp", "function_name", "context_tag"):
+                continue
+            if results in (None, "-", ""):
+                continue
+            try:
+                parsed_data = json.loads(results)
+                for key,_ in parsed_data.items():
+                    headers.add(key)
+            except Exception as e:
+                print(e)
+    print(headers)
+    output = pd.DataFrame()
 
-    for idx, row in dataframe.iterrows():
-        func_name = row.get("Function_name", "N/A")
-        ctx_tag = row.get("Context_tag", "N/A")
-        timestamp = row.get("Timestamp", "N/A")
+    for _,row in dataframe.iterrows():
+        for metric, results in row.items():
+            print(results)
+
+def get_recent_info_about_function_context(dataframe):
+    """Display Recent information about Function or Context."""
+    if dataframe.empty:
+        console.print("[red]Empty result. Please provide valid command.[/red]")
+        return
+
+    for _, row in dataframe.iterrows():
+        func_name = row.get("function_name", "N/A")
+        ctx_tag = row.get("context_tag", "N/A")
+        timestamp = row.get("timestamp", "N/A")
         tit_header = func_name if func_name != "N/A" else ctx_tag
         table = Table(title=f"Function/Context Report — {tit_header}")
         table.add_column("Metrics", style="cyan", no_wrap=True)
@@ -41,7 +66,7 @@ def get_info_about_function_context(dataframe):
         table.add_section()
 
         for metric, results in row.items():
-            if metric in ("Timestamp", "Function_name", "Context_tag"):
+            if metric in ("timestamp", "function_name", "context_tag"):
                 continue
             if results in (None, "-", ""):
                 continue
@@ -66,7 +91,7 @@ def statistical_summary(dataframe):
         return
 
     dataframe_modified = dataframe.drop(
-        ['Timestamp', 'Function_name', 'Context_tag'], axis=1, errors="ignore"
+        ['timestamp', 'function_name', 'context_tag'], axis=1, errors="ignore"
     )
     max_collector = defaultdict(lambda: float('-inf'))
     min_collector = defaultdict(lambda: float('inf'))
@@ -77,7 +102,10 @@ def statistical_summary(dataframe):
             if val in (None, '-', ''):
                 continue
             try:
-                val_dict = json.loads(val)
+                if isinstance(val,str):
+                    val_dict = json.loads(val)
+                else:
+                    val_dict = val
                 if not isinstance(val_dict, dict):
                     continue
             except Exception:
@@ -121,8 +149,15 @@ def find_slowest_fastest_executed(dataframe,column_name,sort_by=True):
         title = 'Fastest time'
     df_clean_func = dataframe.dropna(subset=[column_name])
     output = defaultdict(float)
+
+    
+
     for _,row in df_clean_func.iterrows():
-        output[str(row[column_name])]+=float(str(json.loads(row['ExecutionCollector'])['execution_time']))
+        collector = row["execution_collector"]
+        if isinstance(row["execution_collector"],str):
+            collector = json.loads(collector)
+        output[str(row[column_name])] += float(
+    collector["execution_time"])
     df_output = pd.DataFrame(list(output.items()), columns=[column_name, 'execution_time'])
 
 
@@ -150,13 +185,16 @@ def inverted_print(dataframe_modified, header_row, column):
     table.add_column("peak_memory", justify="right", style="magenta")
 
     merged_values = defaultdict(lambda: {"current_memory": None, "peak_memory": None})
-
     for _, row in dataframe_modified.iterrows():
         if row[header_row] is None or row[column] in (None, "-", ""):
             continue
         try:
-            mem_values = json.loads(row[column])
-        except Exception:
+            if isinstance(row[column],str):
+                mem_values = json.loads(row[column])
+            else:
+                mem_values = row[column]
+        except Exception as e:
+            print(e)
             continue
         if not isinstance(mem_values, dict):
             continue
@@ -174,7 +212,6 @@ def inverted_print(dataframe_modified, header_row, column):
             merged_values[func_name]["peak_memory"] = (
                 peak if existing_peak is None else max(existing_peak, peak)
             )
-
     for func_name, mem_values in merged_values.items():
         table.add_row(
             func_name,

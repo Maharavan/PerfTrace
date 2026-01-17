@@ -10,6 +10,6 @@ def slowest():
     df = check_retrieve_data()
     print("\n[bold yellow]Recent Function data:[/bold yellow]")
     df.fillna('-')
-    find_slowest_fastest_executed(df,'Function_name',sort_by=False)
+    find_slowest_fastest_executed(df,'function_name',sort_by=False)
     print("\n[bold yellow]Recent Context Manager data:[/bold yellow]")
-    find_slowest_fastest_executed(df,'Context_tag',sort_by=False)
+    find_slowest_fastest_executed(df,'context_tag',sort_by=False)

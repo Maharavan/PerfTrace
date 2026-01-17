@@ -9,13 +9,11 @@ DEFAULT_CONFIG = {
         "engine": "duckdb",
         "duckdb": {
             "path": DUCK_DB_FILE,
-            "tablename": "ProfilerReport",
             "read_only": False
         },
         "postgresql": {
             "host": "localhost",
             "port": 5432,
-            "database": "mydb",
             "user": "postgres",
             "password": "changeme"
         }

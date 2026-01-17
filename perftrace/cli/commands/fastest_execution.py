@@ -8,7 +8,10 @@ def fastest():
     print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")
     df = check_retrieve_data()
     print("\n[bold yellow]Function data:[/bold yellow]")
+    if df is None or df.empty:
+        print("\n[bold red]Dataframe empty [/bold red]")
+        return
     df.fillna('-')
-    find_slowest_fastest_executed(df,'Function_name',sort_by=True)
+    find_slowest_fastest_executed(df,'function_name',sort_by=True)
     print("\n[bold yellow]Context Manager data:[/bold yellow]")
-    find_slowest_fastest_executed(df,'Context_tag',sort_by=True)
+    find_slowest_fastest_executed(df,'context_tag',sort_by=True)
