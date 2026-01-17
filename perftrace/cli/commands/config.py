@@ -35,7 +35,7 @@ def create_config():
         pg["host"] = click.prompt("Host", default=pg.get("host", "localhost"))
         pg["port"] = click.prompt("Port", default=pg.get("port", 5432), type=int)
         pg["user"] = click.prompt("Username", default=pg.get("user", "postgres"))
-        pg["password"] = click.prompt("Password", default=pg.get("password", "changeme"), hide_input=True)
+        pg["password"] = click.prompt("Password", hide_input=True)
 
     else:
         console.print("[red]Invalid option. Choose 'duckdb' or 'postgresql'.[/red]")
