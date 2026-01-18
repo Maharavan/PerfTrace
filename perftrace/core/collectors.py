@@ -213,7 +213,7 @@ class SystemCollector(BaseCollector):
         system_memory = psutil.virtual_memory()
         disk_storage = psutil.disk_usage('/')
         uptime = psutil.boot_time()
-        cpu_percent = psutil.cpu_percent(interval=0.1, percpu=True)
+        cpu_percent = psutil.cpu_percent(interval=0.1)
         return {
             "total_system_memory": system_memory.total,
             "available_system_memory":system_memory.available,

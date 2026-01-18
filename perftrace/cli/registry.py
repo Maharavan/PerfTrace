@@ -24,6 +24,8 @@ from perftrace.cli.commands.export_json import export_all_json, export_context_j
 from perftrace.cli.commands.database_info import database_info
 from perftrace.cli.commands.frequency_count import count_function
 from perftrace.cli.commands.frequency_count import count_context
+from perftrace.cli.commands.doctor import doctor
+from perftrace.cli.commands.summary import summary
 from perftrace import __version__
 
 
@@ -143,6 +145,14 @@ cli_commands = {
     "count-context":{
         "function": count_context,
         "description": "Frequency of Context Manager"
+    },
+    "doctor":{
+        "function":doctor,
+        "description":"Run health checks for PerfTrace"
+    },
+    "summary":{
+        "function":summary,
+        "description":"Show overall performance summary"
     }
 }
 
