@@ -1,34 +1,29 @@
-# PerfTrace
+# PerfTrace 🔍
+
+[![PyPI version](https://img.shields.io/pypi/v/perftrace.svg)](https://pypi.org/project/perftrace/)
+![License](https://img.shields.io/github/license/Maharavan/PerfTrace)
+![Stars](https://img.shields.io/github/stars/Maharavan/PerfTrace?style=social)
 
 **PerfTrace** is a unified performance tracing and profiling CLI for Python applications.
 
 It provides detailed insights into **function execution**, **context/module performance**, **CPU and memory usage**, and **system metrics**, with rich statistical summaries and export support — all through a clean, production-ready command-line interface.
 
-PerfTrace is designed to be lightweight, explicit, and developer-controlled.
-It focuses on **performance measurement**, not error monitoring or exception tracking.
+PerfTrace is **developer-centric, explicit, and lightweight**.  
+It focuses on **performance analysis**, not error or exception tracking.
 
 ---
 
-## ✨ Features
+## ✨ Key Features
 
-- 🔍 **Function & Context Profiling**
-- 📊 **Statistical Metrics**
-  - min / max / average
-  - p90 / p95 / p99 percentiles
-  - standard deviation
-- 🕒 **Recent & Historical Analysis**
-- 🐢 **Slowest / Fastest Function Detection**
-- 🧠 **System & Memory Monitoring**
-- 📁 **Export Data**
-  - CSV
-  - JSON
-- 🩺 **Health Diagnostics (`doctor`)**
-- ⚙️ **Configurable Storage Backends**
-  - DuckDB (default)
-  - PostgreSQL
-
-> ⚠️ PerfTrace **does not capture exceptions or stack traces**.
-> If a function raises an error, execution stops as usual and only completed executions are recorded.
+- 🔍 Function & context-level profiling
+- 📊 Statistical metrics (min / max / avg / p90 / p95 / p99 / std dev)
+- 🕒 Recent, daily, and historical analysis
+- 🐢 Slowest / fastest execution detection
+- 🧠 System & memory monitoring
+- 📁 Export to CSV & JSON
+- 🩺 Health diagnostics (`doctor`)
+- ⚙️ Configurable storage backends (DuckDB & PostgreSQL)
+- 🧩 Function, class, and context-manager based instrumentation
 
 ---
 
@@ -43,7 +38,9 @@ pip install perftrace
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Getting Started
+
+Verify installation:
 
 ```bash
 perftrace help
@@ -59,33 +56,31 @@ perftrace stats-function <FUNCTION_NAME>
 
 ---
 
-## 🧠 How PerfTrace Is Used
+## 🧠 How PerfTrace Works
 
-PerfTrace works in two phases:
+PerfTrace works in **two clear phases**:
 
-1. **Instrumentation phase** – decorators or context managers record performance metrics
-2. **Analysis phase** – the CLI queries stored data and produces reports
+1. **Instrumentation**  
+   Developers explicitly mark functions, classes, or code blocks using decorators or context managers.
 
-By default, PerfTrace uses **DuckDB**, so no database setup is required.
+2. **Analysis**  
+   The CLI queries stored metrics and generates summaries, statistics, and exports.
+
+PerfTrace runs **only when your code runs** — there are no background agents, daemons, or always-on processes.
 
 ---
 
 ## 🧩 Instrumenting Your Code
 
-### 1️⃣ Function-Level Profiling
+### Function-Level Profiling
 
 ```python
 from perftrace import perf_trace_metrics
 
 @perf_trace_metrics(profilers=["cpu"])
 def normal_loop():
-    data = []
-    for i in range(100_000):
-        data.append(i)
-    return data
+    return [i for i in range(100_000)]
 ```
-
----
 
 ### Capture All Metrics
 
@@ -95,9 +90,7 @@ def list_comprehensive():
     return [i for i in range(100_000)]
 ```
 
----
-
-### 2️⃣ Class-Level Profiling
+### Class-Level Profiling
 
 ```python
 from perftrace import perf_trace_metrics_cl
@@ -112,9 +105,7 @@ class MyProcessor:
         return y * 2
 ```
 
----
-
-### 3️⃣ Context-Based Profiling
+### Context-Based Profiling
 
 ```python
 from perftrace import PerfTraceContextManager
@@ -125,7 +116,7 @@ with PerfTraceContextManager(context_tag="work"):
 
 ---
 
-## 🧪 Full Example Script
+## 🧪 Complete Example
 
 ```python
 from perftrace import perf_trace_metrics, perf_trace_metrics_cl
@@ -158,27 +149,129 @@ if __name__ == "__main__":
 
 ---
 
-## 📊 Analyze with CLI
+## 📖 Complete CLI Reference
 
-```bash
-perftrace summary
-perftrace slowest
-perftrace fastest
-perftrace stats-function normal_loop
-perftrace stats-context work
-```
+### General Commands
+
+| Command | Description |
+|------|------------|
+| `version` | Show PerfTrace version |
+| `help` | Display help |
+| `doctor` | Run health checks |
+| `summary` | Overall performance summary |
+| `list` | List available functions and contexts |
+
+### Function Commands
+
+| Command | Description |
+|------|------------|
+| `show-function <name>` | Detailed trace data |
+| `stats-function <name>` | Statistical metrics |
+| `recent-function` | Recently executed functions |
+| `search-function <name>` | Search execution history |
+| `count-function` | Execution frequency |
+| `slowest` | Slowest execution |
+| `fastest` | Fastest execution |
+
+### Context Commands
+
+| Command | Description |
+|------|------------|
+| `show-context <name>` | Context trace data |
+| `stats-context <name>` | Statistical metrics |
+| `recent-context` | Recently executed contexts |
+| `search-context <name>` | Search history |
+| `count-context` | Execution frequency |
+
+### Time-Based
+
+| Command | Description |
+|------|------------|
+| `today` | Executions today |
+| `history` | Historical data |
+
+### System & Memory
+
+| Command | Description |
+|------|------------|
+| `system-status` | System status |
+| `system-info` | System information |
+| `system-monitor` | Real-time monitoring |
+| `memory` | Memory usage |
+
+### Export
+
+| Command | Description |
+|------|------------|
+| `export-csv` | Export database to CSV |
+| `export-json` | Export database to JSON |
+| `export-function-csv` | Export function CSV |
+| `export-context-csv` | Export context CSV |
+| `export-function-json` | Export function JSON |
+| `export-context-json` | Export context JSON |
+
+### Database
+
+| Command | Description |
+|------|------------|
+| `database-info` | Database details |
 
 ---
 
-## ⚙ Configuration
+## ⚙️ Configuration (YAML)
+
+Config file locations:
+
+- Linux / macOS: `~/.perftrace/config.yaml`
+- Windows: `%USERPROFILE%\.perftrace\config.yaml`
+
+### DuckDB (Default)
+
+DuckDB is the default backend and requires no setup.
+
+```yaml
+database:
+  engine: duckdb
+  duckdb:
+    path: ./data/default.duckdb
+```
+
+**Use DuckDB when:**
+- local development
+- CI/CD pipelines
+- single-developer workflows
+- quick performance analysis
+
+---
+
+### PostgreSQL (Optional)
+
+Use PostgreSQL for shared or long-term storage.
+
+```yaml
+database:
+  engine: postgresql
+  postgresql:
+    host: localhost
+    port: 5432
+    user: postgres
+    password: your_password
+```
+
+**Use PostgreSQL when:**
+- multiple developers need shared data
+- long-term history is required
+- centralized storage is needed
+
+---
+
+### Interactive Configuration
 
 ```bash
 perftrace set-config
 ```
 
----
-
-## 🩺 Diagnostics
+Verify configuration:
 
 ```bash
 perftrace doctor
@@ -186,24 +279,15 @@ perftrace doctor
 
 ---
 
-## 📁 Exporting Data
+## 🔍 Positioning
 
-```bash
-perftrace export-csv
-perftrace export-json
-perftrace export-function-csv
-perftrace export-context-json
-```
+PerfTrace **complements APM tools** by providing:
+- precise function-level metrics
+- lightweight, on-demand profiling
+- local and CI-friendly analysis
 
 ---
 
 ## 📄 License
 
-[MIT License](LICENSE)
-
----
-
-## ⭐ Positioning
-
-PerfTrace is a **developer-centric performance profiler**.
-It complements APM tools and is not an error-tracking system.
+[MIT-License](LICENSE)
