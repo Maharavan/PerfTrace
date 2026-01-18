@@ -76,7 +76,7 @@ cli_commands = {
     },
     "today":{
         "function":today,
-        "description":"Shows Today Function call"
+        "description":"Shows all function calls executed today"
     },
     "history":{
         "function": history,

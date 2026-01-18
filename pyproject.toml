@@ -1,20 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "perftrace"
-version = "1.0.0"
+version = "0.1.0"
 description = "A lightweight Python profiler for tracing CPU, memory, I/O, GC, and system metrics with storage and CLI support."
-authors = [
-    {name = "Maharavan",email = "90346511+Maharavan@users.noreply.github.com"}
-]
-license = {text = "MIT"}
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = [
+license = { text = "MIT" }
+
+authors = [
+  { name = "Maharavan", email = "90346511+Maharavan@users.noreply.github.com" }
 ]
 
+dependencies = [
+  "click",
+  "rich",
+  "pandas",
+  "numpy",
+  "psycopg2-binary",
+  "duckdb"
+]
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
+[project.scripts]
 perftrace = "perftrace.cli.main:main"
