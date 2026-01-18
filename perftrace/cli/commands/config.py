@@ -24,10 +24,6 @@ def create_config():
             default=config["database"]["duckdb"].get("path", "./data/default.duckdb"),
         )
         config["database"]["duckdb"]["path"] = duckdb_path
-        config["database"]["duckdb"]["read_only"] = click.confirm(
-            "Read only mode?", default=False
-        )
-
     elif db_name == "postgresql":
         config["database"]["engine"] = "postgresql"
         console.print("\n[bold blue]Enter PostgreSQL connection details[/bold blue]")

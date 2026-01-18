@@ -9,7 +9,6 @@ DEFAULT_CONFIG = {
         "engine": "duckdb",
         "duckdb": {
             "path": DUCK_DB_FILE,
-            "read_only": False
         },
         "postgresql": {
             "host": "localhost",

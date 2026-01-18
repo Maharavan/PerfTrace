@@ -30,10 +30,6 @@ def normal_loop():
 def trigger_memory_error():
     big_list = [0] * (10**10)
 
-@perf_trace_metrics()
-def os_error():
-    with open("/nonexistent/path/file.txt", "r") as f:
-        f.read()
 
 if __name__=='__main__':
     track_cl  = MyProcessor()
