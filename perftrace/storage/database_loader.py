@@ -23,17 +23,21 @@ class DatabaseLoader:
         """).format(
             sql.Identifier(tablename)
         )
-        conn = psycopg2.connect(
-            database="postgres",
-            user = config.get('database').get('postgresql').get("user"),
-            password = config.get('database').get('postgresql').get("password"),
-            port = config.get('database').get('postgresql').get("port"),
-            host= config.get('database').get('postgresql').get("host")
-        )
-        dataframe = pd.DataFrame()
-        with conn.cursor() as cur:
-            cur.execute(sql_query)
-            rows = cur.fetchall()
-            column_names = [desc[0] for desc in cur.description]
-            dataframe = pd.DataFrame(rows,columns=column_names)
-        return dataframe
+        try:
+            conn = psycopg2.connect(
+                database="postgres",
+                user = config.get('database').get('postgresql').get("user"),
+                password = config.get('database').get('postgresql').get("password"),
+                port = config.get('database').get('postgresql').get("port"),
+                host= config.get('database').get('postgresql').get("host")
+            )
+            dataframe = pd.DataFrame()
+            with conn.cursor() as cur:
+                cur.execute(sql_query)
+                rows = cur.fetchall()
+                column_names = [desc[0] for desc in cur.description]
+                dataframe = pd.DataFrame(rows,columns=column_names)
+            return dataframe
+        except psycopg2.DatabaseError as e:
+            print(e)
+            raise SystemExit(1)
