@@ -4,6 +4,8 @@ import pandas as pd
 from rich import print
 from rich.console import Console
 from rich.table import Table
+import numpy as np
+
 
 console = Console()
 
@@ -57,7 +59,6 @@ def get_recent_info_about_function_context(dataframe):
         console.print(table)
 
 
-
 def statistical_summary(dataframe):
     """Generate statistical summary (min, max, avg) for JSON metrics."""
     if dataframe.empty:
@@ -97,7 +98,11 @@ def statistical_summary(dataframe):
         summary[key] = {
             "min": round(min_collector[key], 4),
             "max": round(max_collector[key], 4),
-            "avg": round(sum(values) / len(values), 4) if values else None
+            "avg": round(sum(values) / len(values), 4) if values else None,
+            "std_dev": round(np.std(values), 4) if len(values) > 1 else None,
+            "p90": round(np.percentile(values, 90), 4) if len(values) > 1 else None,
+            "p95": round(np.percentile(values, 95), 4) if len(values) > 1 else None,
+            "p99": round(np.percentile(values, 99), 4) if len(values) > 1 else None,
         }
 
     table = Table(title="PerfTrace Statistical Summary")
@@ -105,13 +110,22 @@ def statistical_summary(dataframe):
     table.add_column("Min", justify="right", style="green")
     table.add_column("Max", justify="right", style="magenta")
     table.add_column("Average", justify="right", style="blue")
+    table.add_column("Std. Dev", justify="right", style="blue")
+
+    table.add_column("p90", justify="right", style="blue")
+    table.add_column("p95", justify="right", style="blue")
+    table.add_column("p99", justify="right", style="blue")
 
     for metric, vals in summary.items():
         table.add_row(
             metric,
             str(vals['min']),
             str(vals['max']),
-            str(vals['avg'])
+            str(vals['avg']),
+            str(vals['std_dev']),
+            str(vals['p90']),
+            str(vals['p95']),
+            str(vals['p99'])
         )
 
     console.print(table)

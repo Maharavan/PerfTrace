@@ -60,7 +60,7 @@ cli_commands = {
     },
     "stats-function": {
         "function": stats_function,
-        "description": "Shows statistical metrics (min/max/avg execution time) for a function."
+        "description": "Shows statistical metrics for a function."
     },
     "stats-context": {
         "function": stats_context,
