@@ -33,4 +33,4 @@ jobs:
       - name: Test installation from PyPI
         run: |
           pip install --upgrade perftrace
-          perftrace --version
+          perftrace version
