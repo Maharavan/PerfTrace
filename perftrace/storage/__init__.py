@@ -1,6 +1,5 @@
 from flatten_json import flatten
 from pathlib import Path
-import sqlalchemy as db
 from .duckdb.duckdb_storager import DuckDBStorage
 from .postgres.Postgres_storager import PostgresSQLStorage
 from perftrace.storage.config_manager import ConfigManager

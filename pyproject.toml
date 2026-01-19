@@ -13,15 +13,32 @@ license = { text = "MIT" }
 authors = [
   { name = "Maharavan", email = "90346511+Maharavan@users.noreply.github.com" }
 ]
-
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: System :: Monitoring",
+  "Topic :: Software Development :: Testing"
+]
 dependencies = [
   "click",
   "rich",
   "pandas",
   "numpy",
   "psycopg2-binary",
-  "duckdb"
+  "duckdb",
+  "psutil",
+  "flatten_json",
+  "PyYAML"
 ]
+
+[project.urls]
+Homepage = "https://github.com/Maharavan/PerfTrace"
+Source = "https://github.com/Maharavan/PerfTrace"
+Issues = "https://github.com/Maharavan/PerfTrace/issues"
+Documentation = "https://github.com/Maharavan/PerfTrace#readme"
 
 [project.scripts]
 perftrace = "perftrace.cli.main:main"
