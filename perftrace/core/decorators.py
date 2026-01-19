@@ -17,9 +17,8 @@ profile_collectors = {
     "file":FileIOCollector,
     "garbagecollector":GarbageCollector,
     "ThreadContext": ThreadContextCollector,
-    "network":NetworkActivityCollector,
-    # "error":ExceptionCollector()
-}
+    "network":NetworkActivityCollector
+    }
 
 def perf_trace_metrics(profilers=None):
     def code_tracker(func):

@@ -1,7 +1,8 @@
 # PerfTrace 🔍
 
 [![PyPI version](https://img.shields.io/pypi/v/perftrace.svg)](https://pypi.org/project/perftrace/)
-![License](https://img.shields.io/github/license/Maharavan/PerfTrace)
+[![Python versions](https://img.shields.io/pypi/pyversions/perftrace.svg)](https://pypi.org/project/perftrace/)
+[![License](https://img.shields.io/pypi/l/perftrace.svg)](https://pypi.org/project/perftrace/)
 ![Stars](https://img.shields.io/github/stars/Maharavan/PerfTrace?style=social)
 
 **PerfTrace** is a unified performance tracing and profiling CLI for Python applications.
@@ -40,8 +41,6 @@ pip install perftrace
 
 ## 🚀 Getting Started
 
-Verify installation:
-
 ```bash
 perftrace help
 ```
@@ -72,21 +71,41 @@ PerfTrace runs **only when your code runs** — there are no background agents, 
 
 ## 🧩 Instrumenting Your Code
 
-### Function-Level Profiling
+### 🎛 Selecting Metrics to Collect
+
+PerfTrace allows you to **explicitly control which performance metrics are collected**.
+
+You can either:
+- provide a **list of specific metrics**, or
+- use `"all"` to collect every supported metric
+
+#### Supported Metrics
+
+| Metric | Description |
+|------|------------|
+| `cpu` | CPU usage and CPU time |
+| `memory` | Memory usage and deltas |
+| `execution` | Execution time |
+| `file` | File I/O activity |
+| `garbagecollector` | Garbage collection activity |
+| `ThreadContext` | Thread and execution context |
+| `network` | Network activity |
+
+#### Using Specific Metrics
 
 ```python
 from perftrace import perf_trace_metrics
 
-@perf_trace_metrics(profilers=["cpu"])
-def normal_loop():
+@perf_trace_metrics(profilers=["cpu", "memory", "execution"])
+def compute():
     return [i for i in range(100_000)]
 ```
 
-### Capture All Metrics
+#### Using All Metrics
 
 ```python
 @perf_trace_metrics(profilers="all")
-def list_comprehensive():
+def full_trace():
     return [i for i in range(100_000)]
 ```
 
@@ -95,7 +114,7 @@ def list_comprehensive():
 ```python
 from perftrace import perf_trace_metrics_cl
 
-@perf_trace_metrics_cl(profilers=["cpu"])
+@perf_trace_metrics_cl(profilers=["cpu", "execution"])
 class MyProcessor:
     @staticmethod
     def step1(x):
@@ -110,41 +129,11 @@ class MyProcessor:
 ```python
 from perftrace import PerfTraceContextManager
 
-with PerfTraceContextManager(context_tag="work"):
+with PerfTraceContextManager(
+    context_tag="work",
+    profilers=["cpu", "memory"]
+):
     work = [x ** 2 for x in range(100_000)]
-```
-
----
-
-## 🧪 Complete Example
-
-```python
-from perftrace import perf_trace_metrics, perf_trace_metrics_cl
-from perftrace import PerfTraceContextManager
-
-@perf_trace_metrics_cl(profilers=["cpu"])
-class MyProcessor:
-    @staticmethod
-    def step1(x):
-        return x + 1
-
-@perf_trace_metrics(profilers="all")
-def list_comprehensive():
-    return [i for i in range(100_000)]
-
-@perf_trace_metrics(profilers=["cpu"])
-def normal_loop():
-    return [i for i in range(100_000)]
-
-if __name__ == "__main__":
-    processor = MyProcessor()
-    processor.step1(1)
-
-    list_comprehensive()
-    normal_loop()
-
-    with PerfTraceContextManager(context_tag="work"):
-        work = [x ** 2 for x in range(100_000)]
 ```
 
 ---
@@ -210,12 +199,6 @@ if __name__ == "__main__":
 | `export-function-json` | Export function JSON |
 | `export-context-json` | Export context JSON |
 
-### Database
-
-| Command | Description |
-|------|------------|
-| `database-info` | Database details |
-
 ---
 
 ## ⚙️ Configuration (YAML)
@@ -227,8 +210,6 @@ Config file locations:
 
 ### DuckDB (Default)
 
-DuckDB is the default backend and requires no setup.
-
 ```yaml
 database:
   engine: duckdb
@@ -236,17 +217,7 @@ database:
     path: ./data/default.duckdb
 ```
 
-**Use DuckDB when:**
-- local development
-- CI/CD pipelines
-- single-developer workflows
-- quick performance analysis
-
----
-
 ### PostgreSQL (Optional)
-
-Use PostgreSQL for shared or long-term storage.
 
 ```yaml
 database:
@@ -258,20 +229,13 @@ database:
     password: your_password
 ```
 
-**Use PostgreSQL when:**
-- multiple developers need shared data
-- long-term history is required
-- centralized storage is needed
-
----
-
-### Interactive Configuration
+Interactive setup:
 
 ```bash
 perftrace set-config
 ```
 
-Verify configuration:
+Verify:
 
 ```bash
 perftrace doctor
@@ -279,15 +243,17 @@ perftrace doctor
 
 ---
 
-## 🔍 Positioning
+## 🔍 Positioning (PerfTrace vs APM Tools)
 
 PerfTrace **complements APM tools** by providing:
 - precise function-level metrics
 - lightweight, on-demand profiling
 - local and CI-friendly analysis
 
+PerfTrace is not a distributed tracing or error-tracking system.
+
 ---
 
 ## 📄 License
 
-[MIT-License](LICENSE)
+[MIT License](LICENSE)
