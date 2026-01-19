@@ -5,7 +5,6 @@ from perftrace.core.collectors import FileIOCollector
 from perftrace.core.collectors import GarbageCollector
 from perftrace.core.collectors import NetworkActivityCollector
 from perftrace.core.collectors import ThreadContextCollector
-# from perftrace.core.collectors import ExceptionCollector
 from perftrace.storage import get_storage
 import asyncio
 import datetime

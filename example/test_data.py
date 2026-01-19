@@ -37,7 +37,7 @@ if __name__=='__main__':
     lc = list_comprehensive()
     nl = normal_loop()
     #trigger_memory_error()
-    with PerfTraceContextManager(context_tag="work") as collectors:
+    with PerfTraceContextManager(context_tag="work",cls_collectors=["cpu","memory"]) as collectors:
         work = [x ** 2 for x in range(100000)]
 
     # print(collectors.get_metrics())

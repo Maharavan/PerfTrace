@@ -1,0 +1,36 @@
+name: PerfTrace PyPI Deployment
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  pypi-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+        
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install twine
+          pip install -r requirements.txt
+
+      - name: Build and upload to PyPI
+        run: |
+          pip install --upgrade build
+          python -m build
+          twine upload --repository pypi -u __token__ -p ${{ secrets.PYPI_TOKEN }} dist/* --verbose
+
+      - name: Test installation from PyPI
+        run: |
+          pip install --upgrade perftrace
+          perftrace --version

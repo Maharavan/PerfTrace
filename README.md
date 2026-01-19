@@ -131,7 +131,7 @@ from perftrace import PerfTraceContextManager
 
 with PerfTraceContextManager(
     context_tag="work",
-    profilers=["cpu", "memory"]
+    cls_collectors=["cpu", "memory"]
 ):
     work = [x ** 2 for x in range(100_000)]
 ```
