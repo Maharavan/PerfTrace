@@ -98,7 +98,7 @@ from perftrace import perf_trace_metrics
 
 @perf_trace_metrics(profilers=["cpu", "memory", "execution"])
 def compute():
-    return [i for i in range(100_000)]
+    return [i for i in range(100000)]
 ```
 
 #### Using All Metrics
@@ -106,7 +106,7 @@ def compute():
 ```python
 @perf_trace_metrics(profilers="all")
 def full_trace():
-    return [i for i in range(100_000)]
+    return [i for i in range(100000)]
 ```
 
 ### Class-Level Profiling
@@ -133,7 +133,7 @@ with PerfTraceContextManager(
     context_tag="work",
     cls_collectors=["cpu", "memory"]
 ):
-    work = [x ** 2 for x in range(100_000)]
+    work = [x ** 2 for x in range(100000)]
 ```
 
 ---
