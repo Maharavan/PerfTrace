@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "perftrace"
-version = "1.0.0"
+version = "1.0.1"
 description = "A lightweight Python profiler for tracing CPU, memory, I/O, GC, and system metrics with storage and CLI support."
 readme = "README.md"
 requires-python = ">=3.11"
