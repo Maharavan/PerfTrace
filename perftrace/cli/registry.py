@@ -21,11 +21,16 @@ from perftrace.cli.commands.system_info import system_info
 from perftrace.cli.commands.export_csv import export_context_csv, export_result_csv
 from perftrace.cli.commands.export_csv import export_function_csv
 from perftrace.cli.commands.export_json import export_all_json, export_context_json, export_function_json
+from perftrace.cli.commands.export_html import export_all_html, export_function_html, export_context_html
 from perftrace.cli.commands.database_info import database_info
 from perftrace.cli.commands.frequency_count import count_function
 from perftrace.cli.commands.frequency_count import count_context
 from perftrace.cli.commands.doctor import doctor
 from perftrace.cli.commands.summary import summary
+from perftrace.cli.commands.top_commands import top_memory, top_cpu
+from perftrace.cli.commands.exceptions import exceptions
+from perftrace.cli.commands.compare_data import compare_function, compare_context
+from perftrace.cli.commands.io_report import io_report
 from perftrace import __version__
 
 
@@ -134,6 +139,18 @@ cli_commands = {
         "function": export_context_json,
         "description": "Export the Context data in JSON format"
     },
+    "export-html":{
+        "function": export_all_html,
+        "description": "Export the complete database to HTML"
+    },
+    "export-function-html":{
+        "function": export_function_html,
+        "description": "Export function trace records to HTML"
+    },
+    "export-context-html":{
+        "function": export_context_html,
+        "description": "Export context manager trace records to HTML"
+    },
     "database-info":{
         "function": database_info,
         "description": "Get details of Database"
@@ -153,6 +170,30 @@ cli_commands = {
     "summary":{
         "function":summary,
         "description":"Show overall performance summary"
-    }
+    },
+    "top-memory": {
+        "function": top_memory,
+        "description": "Top N functions/contexts ranked by peak memory allocation",
+    },
+    "top-cpu": {
+        "function": top_cpu,
+        "description": "Top N functions/contexts ranked by average CPU usage",
+    },
+    "exceptions": {
+        "function": exceptions,
+        "description": "List all trace records where an exception was raised",
+    },
+    "compare-function": {
+        "function": compare_function,
+        "description": "Side-by-side average metric comparison of two functions",
+    },
+    "compare-context": {
+        "function": compare_context,
+        "description": "Side-by-side average metric comparison of two context tags",
+    },
+    "io-report": {
+        "function": io_report,
+        "description": "Aggregated file I/O (read/write bytes and op counts) per function/context",
+    },
 }
 

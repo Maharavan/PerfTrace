@@ -1,15 +1,23 @@
 import click
+from rich.console import Console
+from rich.panel import Panel
 from perftrace.cli.db_utils import check_retrieve_data
 from perftrace.cli.logger import find_slowest_fastest_executed
-from rich import print
+
+console = Console()
+
 
 @click.command()
 def slowest():
-    """Show Top 10 slowest executed functions/Context Managers"""
-    print("[bold cyan]PerfTrace CLI[/bold cyan] - Unified Performance Tracing")
+    """Show the 10 slowest executed functions and context managers."""
     df = check_retrieve_data()
-    print("\n[bold yellow]Recent Function data:[/bold yellow]")
-    df.fillna('-')
-    find_slowest_fastest_executed(df,'function_name',sort_by=False)
-    print("\n[bold yellow]Recent Context Manager data:[/bold yellow]")
-    find_slowest_fastest_executed(df,'context_tag',sort_by=False)
+    if df is None or df.empty:
+        console.print(Panel("[yellow]No trace data found.[/yellow]", border_style="yellow"))
+        return
+    df = df.fillna("-")
+    console.print(Panel.fit(
+        "[bold cyan]PerfTrace[/bold cyan]  [dim]Top 10 Slowest Executions[/dim]",
+        border_style="cyan", padding=(0, 2),
+    ))
+    find_slowest_fastest_executed(df, "function_name", sort_by=False)
+    find_slowest_fastest_executed(df, "context_tag",   sort_by=False)

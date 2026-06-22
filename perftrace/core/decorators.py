@@ -5,6 +5,7 @@ from perftrace.core.collectors import FileIOCollector
 from perftrace.core.collectors import GarbageCollector
 from perftrace.core.collectors import NetworkActivityCollector
 from perftrace.core.collectors import ThreadContextCollector
+from perftrace.core.collectors import ExceptionCollector
 from perftrace.storage import get_storage
 import asyncio
 import datetime
@@ -25,36 +26,15 @@ def perf_trace_metrics(profilers=None):
         def sync_wrapper(*args,**kwargs):
             report = {}
             active_collectors = _iterate_collectors(profilers)
+            exc_collector = ExceptionCollector()
+            exc_collector.start()
 
             for _,collector in active_collectors.items():
                 collector.start()
             try:
-                return func(*args,**kwargs) 
+                return func(*args,**kwargs)
             except BaseException as e:
-                # ExceptionCollector.capture()
-                print(f'[PerfTrace] {func.__name__} {e} failed')
-                raise
-            finally:
-                report["Timestamp"] = datetime.datetime.now()
-                report["Function_name"] = func.__name__
-                report["Context_tag"] = None
-                for name,collector in active_collectors.items():
-                    collector.stop()
-                    report[collector.__class__.__name__] = collector.report()                    
-                get_storage(report=report)
-
-        @wraps(func)
-        async def async_wrapper(*args,**kwargs):
-            report = {}
-            active_collectors = _iterate_collectors(profilers)
-
-            for _,collector in active_collectors.items():
-                collector.start()
-            try:
-                return await func(*args,**kwargs) 
-            except BaseException as e:
-                # ExceptionCollector.capture()
-                print(f'[PerfTrace] {func.__name__} {e} failed')
+                exc_collector.capture(e)
                 raise
             finally:
                 report["Timestamp"] = datetime.datetime.now()
@@ -63,8 +43,31 @@ def perf_trace_metrics(profilers=None):
                 for name,collector in active_collectors.items():
                     collector.stop()
                     report[collector.__class__.__name__] = collector.report()
-                    
-                    #print(f"[PerfTrace] {collector.__class__.__name__} {report[collector.__class__.__name__]}")
+                report["ExceptionCollector"] = exc_collector.report()
+                get_storage(report=report)
+
+        @wraps(func)
+        async def async_wrapper(*args,**kwargs):
+            report = {}
+            active_collectors = _iterate_collectors(profilers)
+            exc_collector = ExceptionCollector()
+            exc_collector.start()
+
+            for _,collector in active_collectors.items():
+                collector.start()
+            try:
+                return await func(*args,**kwargs)
+            except BaseException as e:
+                exc_collector.capture(e)
+                raise
+            finally:
+                report["Timestamp"] = datetime.datetime.now()
+                report["Function_name"] = func.__name__
+                report["Context_tag"] = None
+                for name,collector in active_collectors.items():
+                    collector.stop()
+                    report[collector.__class__.__name__] = collector.report()
+                report["ExceptionCollector"] = exc_collector.report()
                 get_storage(report=report)
         if asyncio.iscoroutinefunction(func):
             return async_wrapper

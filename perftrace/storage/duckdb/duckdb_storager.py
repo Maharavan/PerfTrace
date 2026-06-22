@@ -17,12 +17,16 @@ class DuckDBStorage:
             self._insert_data(con)
                 
     def _create_table(self,con):
-        from perftrace.storage.duckdb.schema import DUCKDB_SCHEMA
+        from perftrace.storage.duckdb.schema import DUCKDB_SCHEMA, DUCKDB_MIGRATION
         con.execute(DUCKDB_SCHEMA)
+        try:
+            con.execute(DUCKDB_MIGRATION)
+        except Exception:
+            pass
 
     def _insert_data(self,con):
         con.execute(
-            f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 self.profiler_report["Timestamp"],
                 self.profiler_report["Function_name"],
@@ -30,9 +34,10 @@ class DuckDBStorage:
                 json.dumps(self.profiler_report["ExecutionCollector"]) if "ExecutionCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["MemoryCollector"]) if "MemoryCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["CPUCollector"]) if "CPUCollector" in self.profiler_report else None,
-                json.dumps(self.profiler_report["FileIOCollector"]) if "FileIOCollector"in self.profiler_report else None,
+                json.dumps(self.profiler_report["FileIOCollector"]) if "FileIOCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["GarbageCollector"]) if "GarbageCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["ThreadContextCollector"]) if "ThreadContextCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["NetworkActivityCollector"]) if "NetworkActivityCollector" in self.profiler_report else None,
+                json.dumps(self.profiler_report["ExceptionCollector"]) if "ExceptionCollector" in self.profiler_report else None,
             )
         )

@@ -9,6 +9,11 @@ CREATE TABLE IF NOT EXISTS {} (
     fileio_collector JSONB,
     garbage_collector JSONB,
     thread_context_collector JSONB,
-    network_activity_collector JSONB
+    network_activity_collector JSONB,
+    exception_collector JSONB
 );
+"""
+
+POSTGRES_MIGRATION = """
+ALTER TABLE {} ADD COLUMN IF NOT EXISTS exception_collector JSONB;
 """

@@ -5,6 +5,7 @@ from perftrace.core.collectors import FileIOCollector
 from perftrace.core.collectors import GarbageCollector
 from perftrace.core.collectors import NetworkActivityCollector
 from perftrace.core.collectors import ThreadContextCollector
+from perftrace.core.collectors import ExceptionCollector
 from perftrace.storage import get_storage
 import datetime
 class PerfTraceContextManager:
@@ -51,7 +52,9 @@ class PerfTraceContextManager:
                 raise ValueError(f"Unknown collector '{cls_collectors}'. Available: {available}")    
             self.active_collectors = {cls_collectors:self.collectors[cls_collectors]}
         self.active_collectors["execution"] = ExecutionCollector()
+        self.exc_collector = ExceptionCollector()
     def __enter__(self):
+        self.exc_collector.start()
         failed_collectors = []
         for name,collector in self.active_collectors.items():
             try:
@@ -63,12 +66,15 @@ class PerfTraceContextManager:
         return self
 
     def __exit__(self,exc_type,exc_value,exc_traceback):
+        if exc_value is not None:
+            self.exc_collector.capture(exc_value)
         self.report["Timestamp"] = datetime.datetime.now()
         self.report["Function_name"] = None
         self.report["Context_tag"] = self.context_tag
         for _,collector in self.active_collectors.items():
             collector.stop()
             self.report[collector.__class__.__name__] = collector.report()
+        self.report["ExceptionCollector"] = self.exc_collector.report()
         get_storage(report=self.report)
         return False
     

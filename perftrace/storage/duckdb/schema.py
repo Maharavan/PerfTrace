@@ -11,6 +11,11 @@ CREATE TABLE IF NOT EXISTS {DB_TABLE_NAME} (
     file_io_collector JSON,
     garbage_collector JSON,
     thread_context_collector JSON,
-    network_activity_collector JSON
+    network_activity_collector JSON,
+    exception_collector JSON
 )
+"""
+
+DUCKDB_MIGRATION = f"""
+ALTER TABLE {DB_TABLE_NAME} ADD COLUMN IF NOT EXISTS exception_collector JSON;
 """

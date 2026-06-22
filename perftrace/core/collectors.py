@@ -260,12 +260,33 @@ class ThreadContextCollector(BaseCollector):
             },
         }
 
-# class ExceptionCollector(BaseCollector):
-#     def start(self):
-#         return super().start()
-#     def stop(self):
-#         return super().stop()
-    
-#     def report(self):
-#         return super().report()
-#     def capture(self):
+class ExceptionCollector(BaseCollector):
+    def __init__(self):
+        self.exception_type = None
+        self.exception_message = None
+        self.exception_traceback = None
+        self.occurred = False
+
+    def start(self):
+        self.exception_type = None
+        self.exception_message = None
+        self.exception_traceback = None
+        self.occurred = False
+
+    def stop(self):
+        pass
+
+    def capture(self, exc: BaseException):
+        import traceback as tb
+        self.occurred = True
+        self.exception_type = type(exc).__name__
+        self.exception_message = str(exc)
+        self.exception_traceback = tb.format_exc()
+
+    def report(self):
+        return {
+            "occurred": self.occurred,
+            "exception_type": self.exception_type,
+            "exception_message": self.exception_message,
+            "traceback": self.exception_traceback,
+        }

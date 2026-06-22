@@ -1,4 +1,4 @@
-name: PerfTrace PyPI Deployment
+name: PerfTrace CI / PyPI Deployment
 
 on:
   push:
@@ -6,18 +6,22 @@ on:
       - '*'
 
 jobs:
+  test:
+    uses: ./.github/workflows/test.yml
+
   pypi-deploy:
     runs-on: ubuntu-latest
-    
+    needs: test
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
-        
+          python-version: '3.11'
+
       - name: Install dependencies
         run: |
           pip install --upgrade pip

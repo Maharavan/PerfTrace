@@ -32,11 +32,16 @@ class PostgresSQLStorage:
 
     
     def create_table(self,conn):
-        from perftrace.storage.postgres.schema import POSTGRES_SCHEMA
+        from perftrace.storage.postgres.schema import POSTGRES_SCHEMA, POSTGRES_MIGRATION
         try:
             with conn.cursor() as cur:
                 create_db_query = sql.SQL(POSTGRES_SCHEMA).format(sql.Identifier(self.table_name))
                 cur.execute(create_db_query)
+                try:
+                    migration_query = sql.SQL(POSTGRES_MIGRATION).format(sql.Identifier(self.table_name))
+                    cur.execute(migration_query)
+                except Exception:
+                    pass
         except (Exception, errors.DatabaseError) as error:
             if conn:
                 conn.rollback()
@@ -57,9 +62,10 @@ class PostgresSQLStorage:
                 fileio_collector,
                 garbage_collector,
                 thread_context_collector,
-                network_activity_collector
+                network_activity_collector,
+                exception_collector
             ) VALUES (
-                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
             );
             """).format(sql.Identifier(self.table_name))
             data = (
@@ -69,10 +75,11 @@ class PostgresSQLStorage:
                 json.dumps(self.profiler_report["ExecutionCollector"]) if "ExecutionCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["MemoryCollector"]) if "MemoryCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["CPUCollector"]) if "CPUCollector" in self.profiler_report else None,
-                json.dumps(self.profiler_report["FileIOCollector"]) if "FileIOCollector"in self.profiler_report else None,
+                json.dumps(self.profiler_report["FileIOCollector"]) if "FileIOCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["GarbageCollector"]) if "GarbageCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["ThreadContextCollector"]) if "ThreadContextCollector" in self.profiler_report else None,
                 json.dumps(self.profiler_report["NetworkActivityCollector"]) if "NetworkActivityCollector" in self.profiler_report else None,
+                json.dumps(self.profiler_report["ExceptionCollector"]) if "ExceptionCollector" in self.profiler_report else None,
             )
             with conn.cursor() as cur:
                 cur.execute(insert_sql,data)
